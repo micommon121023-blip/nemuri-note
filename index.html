@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#F3EEE3" id="meta-theme">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ねむりノート">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.json">
+<title>ねむりノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+/* Layout: a calm family board. Colours come from the daughter's character (cream, olive, matcha). Member cards, then the week's paw stamps, then rewards; tab bar at the bottom. Evenings switch to a deep olive night palette. */
+:root{
+  --bg:#F3EEE3; --surface:#FFFDF8; --surface-2:#F0EADD; --ink:#2F2A22; --ink-2:#5C5447; --muted:#82796A; --line:#E3DBCC;
+  --accent:#5D6B26; --on-accent:#FFFCF2; --wash:#E7EBD2; --stamp:#5D6B26; --gauge:#8CA23F; --warn:#B4505B;
+  --m0:#6E8A26; --m1:#3B76B0; --m2:#C25F6A;
+  --font-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN",sans-serif;
+  --font-body:"Zen Kaku Gothic New","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --r:16px;
+  color-scheme:light;
+}
+html.night{
+  --bg:#171A14; --surface:#22261D; --surface-2:#2C3125; --ink:#F1ECDF; --ink-2:#CFC8B6; --muted:#9C9583; --line:#383E2F;
+  --accent:#B7C873; --on-accent:#1D2114; --wash:#343B27; --stamp:#C3D37F; --gauge:#B7C873; --warn:#E08A93;
+  --m0:#84993A; --m1:#5B93CC; --m2:#CC737D;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1.65;line-break:strict;word-break:normal;word-break:auto-phrase;-webkit-font-smoothing:antialiased;transition:background-color .6s,color .6s}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+.app{max-width:1080px;margin:0 auto;padding:10px 20px 120px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0 16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand h1{font-family:var(--font-display);font-weight:700;font-size:24px;margin:0;letter-spacing:.06em}
+.brand .date{color:var(--muted);font-weight:500;font-size:15px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink-2)}
+.chip svg{width:15px;height:15px}
+.banner{background:var(--wash);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+.hero{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;background:var(--surface);border-radius:var(--r);padding:12px 12px 12px 22px;margin-bottom:16px}
+.hero .hl{font-family:var(--font-display);font-weight:700;font-size:21px;line-height:1.45;margin:0;text-wrap:balance}
+.hero .sub{margin:4px 0 0;color:var(--ink-2);font-size:15px}
+.hero img{width:124px;height:110px;object-fit:contain}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--surface);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px}
+.mcard{box-shadow:inset 0 4px 0 var(--mc)}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mname{display:flex;align-items:center;gap:6px;font-weight:700;font-size:20px;min-width:0}
+.mname .nm{overflow-wrap:anywhere}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--mc);flex:none}
+.pencil{border:0;background:transparent;color:var(--muted);width:34px;height:34px;border-radius:50%;display:inline-grid;place-items:center;cursor:pointer;flex:none}
+.pencil:hover{background:var(--surface-2);color:var(--ink)}
+.pencil svg{width:17px;height:17px}
+.lv{font-size:12px;font-weight:700;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap}
+.last{display:grid;grid-template-columns:auto 1fr;gap:3px 16px;margin:0;font-size:15px}
+.last dt{color:var(--muted)}
+.last dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
+.paws{display:inline-flex;gap:2px;vertical-align:-3px}
+.paws svg{width:17px;height:17px}
+.goal{font-size:14px;color:var(--ink-2);background:var(--surface-2);border-radius:10px;padding:8px 12px}
+.goal b{color:var(--ink);font-variant-numeric:tabular-nums}
+.meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);font-weight:700}
+.meta span{display:inline-flex;align-items:center;gap:5px}
+.meta svg{width:15px;height:15px;color:var(--accent)}
+.sleeping{display:flex;gap:12px;align-items:center;background:var(--wash);border-radius:12px;padding:8px 12px}
+.sleeping img{width:76px;height:60px;object-fit:contain;flex:none}
+.sleeping b{display:block;font-size:15px}
+.sleeping span{font-size:13px;color:var(--ink-2)}
+.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}
+.btn{appearance:none;border:0;border-radius:12px;min-height:52px;padding:10px 14px;font-weight:700;font-size:17px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--surface-2);color:var(--ink);transition:transform .08s,background-color .2s}
+.btn svg{width:20px;height:20px}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.small{min-height:40px;font-size:14px;border-radius:10px;padding:6px 14px}
+.btn.ghost{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.btn.danger{background:transparent;box-shadow:inset 0 0 0 1px var(--warn);color:var(--warn)}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.35;cursor:default}
+section.block{margin-top:26px}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+h2{font-family:var(--font-display);font-weight:700;font-size:19px;margin:0;text-wrap:balance}
+.panel{background:var(--surface);border-radius:var(--r);padding:16px}
+.scroll-x{overflow-x:auto}
+.wtable{display:grid;grid-template-columns:104px repeat(7,minmax(38px,1fr));gap:8px 6px;align-items:center;min-width:450px}
+.wtable .h{font-size:12px;color:var(--muted);text-align:center;line-height:1.3;font-variant-numeric:tabular-nums}
+.wtable .h.today{color:var(--ink);font-weight:700}
+.wtable .who{font-size:14px;font-weight:700;display:flex;gap:6px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wtable .who svg{width:15px;height:15px;color:var(--accent)}
+.slot{width:100%;max-width:40px;aspect-ratio:1;margin:0 auto;border-radius:50%;display:grid;place-items:center;background:var(--surface-2)}
+.slot.on{background:var(--wash)}
+.slot.future{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.slot svg{width:62%;height:62%}
+.rewards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.rcard h3{font-size:14px;margin:0;font-weight:700;color:var(--muted)}
+.rcard .big{font-family:var(--font-display);font-weight:700;font-size:21px;line-height:1.4}
+.pips{display:flex;gap:8px}
+.pip{width:32px;height:32px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center}
+.pip.on{background:var(--wash)}
+.pip svg{width:20px;height:20px}
+.gauge{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.gauge>i{display:block;height:100%;background:var(--gauge);border-radius:999px;transition:width 1s ease}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.center{text-align:center}
+.pal-mini{display:flex;gap:14px;align-items:center}
+.pal-mini img{width:92px;height:84px;object-fit:contain;flex:none}
+.badgelist{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.job{align-self:flex-start;border:0;background:var(--wash);color:var(--ink);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.job{padding:3px 12px 3px 4px}
+.hero .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.hero .acts .btn{min-height:46px}
+.hero .sub2{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.checkline{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center;font-size:13px}
+.checkline .lbl{color:var(--muted);font-weight:700;margin-right:2px}
+.checkline span.c{background:var(--surface-2);border-radius:999px;padding:2px 10px;font-weight:700}
+.checkline span.c.ok{background:var(--wash)}
+.tut{position:fixed;inset:0;z-index:80;background:var(--bg);display:none;overflow:auto}
+.tut.open{display:block}
+.tut-inner{max-width:720px;margin:0 auto;padding:18px 20px 0;display:flex;flex-direction:column;gap:16px;min-height:100%}
+.tut-top{display:flex;align-items:center;gap:14px}
+.tut-top .steps{flex:1;display:flex;gap:6px}
+.tut-top .steps i{flex:1;height:6px;border-radius:999px;background:var(--line)}
+.tut-top .steps i.on{background:var(--accent)}
+.tut-top .cnt{font-size:13px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+.tut-head{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.tut-head h2{font-size:26px;line-height:1.4}
+.tut-head .lead{margin:6px 0 0;color:var(--ink-2);font-size:15px}
+.tut-head img{width:150px;height:130px;object-fit:contain}
+.tut-card{background:var(--surface);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.tut-card.mc{box-shadow:inset 4px 0 0 var(--mc)}
+.tut-card h3{margin:0;font-size:17px;display:flex;align-items:center;gap:8px}
+.calc{font-size:15px;background:var(--surface-2);border-radius:10px;padding:8px 12px}
+.calc b{font-size:18px;font-variant-numeric:tabular-nums}
+.warnline{color:var(--warn);font-size:13px;margin:0}
+.olist{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px;font-size:16px}
+.menu-edit{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.menu-edit li{display:flex;gap:8px;align-items:center;background:var(--surface-2);border-radius:10px;padding:6px 6px 6px 12px;font-size:15px}
+.menu-edit li span{flex:1}
+.menu-edit .x{border:0;background:transparent;width:36px;height:36px;border-radius:50%;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
+.sumtbl{width:100%;border-collapse:collapse;font-size:15px}
+.sumtbl th{font-size:12px;color:var(--muted);text-align:left;padding:6px 6px;border-bottom:1px solid var(--line)}
+.sumtbl td{padding:8px 6px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.promise{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.promise li{display:flex;gap:12px;align-items:flex-start;font-size:16px;font-weight:700;line-height:1.5}
+.promise li svg{width:22px;height:22px;flex:none;margin-top:2px}
+.tut-nav{position:sticky;bottom:0;margin-top:auto;background:linear-gradient(to bottom,transparent,var(--bg) 30%);padding:18px 0 calc(16px + env(safe-area-inset-bottom));display:flex;gap:10px;justify-content:space-between}
+.tut-nav .btn{min-width:130px}
+.prep-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.prep-list{display:flex;flex-direction:column;gap:8px}
+img.photo{border-radius:16px;object-fit:cover !important}
+.avatar{width:42px;height:42px;object-fit:contain;flex:none;margin-right:2px}
+.moods .btn img{width:76px;height:76px;border-radius:50%;object-fit:cover;object-position:50% 35%;background:var(--wash)}
+.roleimg img{width:76px;height:76px;object-fit:contain;display:block}
+.avbtn{border:0;background:var(--surface-2);border-radius:14px;padding:4px;cursor:pointer;flex:none}
+.avbtn img{width:60px;height:60px;object-fit:contain;display:block}
+.meta button{border:0;background:transparent;padding:0;font:inherit;color:inherit;display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-weight:700}
+.ti{display:inline-grid;place-items:center;border-radius:30%;flex:none}
+.ti svg{width:62%;height:62%}
+.prow{appearance:none;border:0;width:100%;text-align:left;cursor:pointer;background:var(--surface-2);color:var(--ink);border-radius:14px;padding:10px 12px;display:grid;grid-template-columns:44px minmax(0,1fr) auto 34px;grid-template-areas:"i n w c" "i s s c";gap:0 12px;align-items:center}
+.prow .ti{grid-area:i}
+.prow .pc{grid-area:c;width:30px;height:30px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--line);display:grid;place-items:center;background:var(--surface)}
+.prow .pc svg{width:18px;height:18px;color:var(--on-accent)}
+.prow .pn{grid-area:n;font-weight:700;font-size:16px}
+.prow .pn em{font-style:normal;font-size:12px;background:var(--accent);color:var(--on-accent);border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:2px}
+.prow .pw{grid-area:w;font-size:12px;color:var(--muted);font-weight:700}
+.prow .ps{grid-area:s;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.prow .ps.over{color:var(--warn)}
+.prow.done{background:var(--wash)}
+.prow.done .pc{background:var(--accent);box-shadow:none}
+.prow.done .pn{color:var(--ink-2)}
+.prow.done .ti{animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+.prow.next{box-shadow:inset 0 0 0 2px var(--accent)}
+.prow.free{cursor:default;background:transparent;box-shadow:inset 0 0 0 2px var(--line)}
+.prep-bar{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.prep-bar>i{display:block;height:100%;background:var(--gauge);border-radius:999px;transition:width .6s ease}
+.pe{display:grid;grid-template-columns:34px 44px minmax(0,1fr) 110px 110px 92px 28px 36px;grid-template-areas:"m i n d w t o x";gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.pe:last-child{border-bottom:0}
+.pe.off{opacity:.5}
+.pe .m{grid-area:m;display:flex;flex-direction:column;gap:2px}
+.pe .m button{border:0;background:var(--surface-2);border-radius:6px;width:30px;height:22px;cursor:pointer;color:var(--ink-2);display:grid;place-items:center;padding:0}
+.pe .m button svg{width:14px;height:14px}
+.pe .m button[disabled]{opacity:.3;cursor:default}
+.pe .ib{grid-area:i;border:0;background:transparent;padding:0;cursor:pointer;border-radius:12px}
+.pe .n{grid-area:n}.pe .d{grid-area:d}.pe .w{grid-area:w}.pe .o{grid-area:o}.pe .x{grid-area:x}
+.pe .t{grid-area:t;font-size:13px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums;line-height:1.3}
+.pe .t small{display:block;font-weight:500;color:var(--muted)}
+.pe .x{border:0;background:transparent;width:36px;height:36px;border-radius:50%;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
+@media (max-width:700px){.pe{grid-template-columns:34px 44px minmax(0,1fr) minmax(0,1fr) 28px 36px;grid-template-areas:"m i n n o x" "m d d w w w" "m t t t t t";row-gap:6px}.pe .t small{display:inline;margin-left:8px}}
+input[type=checkbox]{width:22px;height:22px;min-height:0;padding:0;accent-color:var(--accent)}
+.prep-stats td.late{color:var(--warn);font-weight:700}
+.prep-stats .ti{vertical-align:middle;margin-right:4px}
+.prep-stats td.ok{color:var(--accent);font-weight:700}
+.badgelist div{display:flex;align-items:center;gap:8px;font-size:14px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:20}
+nav.tabs .inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:620px;width:100%;gap:4px}
+nav.tabs button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0;font-size:12px;font-weight:700;color:var(--muted);border-radius:12px;cursor:pointer;min-height:52px}
+nav.tabs button[aria-current="page"]{color:var(--accent);background:var(--surface-2)}
+nav.tabs svg{width:22px;height:22px}
+.seg{display:inline-flex;background:var(--surface);border-radius:999px;padding:4px;gap:4px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:7px 14px;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer;display:flex;gap:6px;align-items:center;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--ink)}
+.toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.weeknav{display:flex;gap:8px;align-items:center;font-weight:700;font-size:15px}
+.weeknav .btn{min-height:40px;width:40px;padding:0;border-radius:50%}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.tile{background:var(--surface);border-radius:14px;padding:12px 14px}
+.tile .l{font-size:12px;color:var(--muted);font-weight:700}
+.tile .v{font-family:var(--font-display);font-size:26px;font-weight:700;line-height:1.3}
+.tile .dl{font-size:12px;color:var(--ink-2);font-weight:700;margin-top:2px}
+.cal .c .cs{font-size:11px;color:var(--muted);font-weight:700;line-height:1}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,13px);gap:3px;width:max-content}
+.hc{display:inline-block;width:13px;height:13px;border-radius:3px;background:var(--stamp)}
+.hc.none{background:transparent}
+.hc.miss{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
+.tile .v small{font-size:13px;margin-left:3px;font-family:var(--font-body)}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.chartcard h3{margin:0 0 2px;font-size:15px}
+.chartcard .cap{margin:0 0 8px;font-size:12px;color:var(--muted)}
+.chart{position:relative}
+.chart svg{display:block}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .tick{fill:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.chart .xl{fill:var(--ink-2);font-size:12px;font-variant-numeric:tabular-nums}
+.chart .xl.we{fill:var(--accent);font-weight:700}
+.chart .ref{stroke:var(--accent);stroke-width:2;stroke-linecap:round}
+.chart .ref2{stroke:var(--muted);stroke-width:1.5}
+.chart .rl{fill:var(--ink-2);font-size:12px;font-weight:700}
+.chart .vl{fill:var(--ink);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.chart .bandhl{fill:var(--surface-2);opacity:0}
+.chart .bandhl.active{opacity:1}
+.chart .hit{fill:transparent;cursor:pointer}
+.tip{position:absolute;z-index:5;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.5;white-space:nowrap;transform:translate(-50%,calc(-100% - 8px));opacity:0;transition:opacity .12s}
+.tip.show{opacity:1}
+.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px;min-width:560px}
+.tbl th{font-size:12px;color:var(--muted);text-align:left;font-weight:700;padding:6px 8px;border-bottom:1px solid var(--line)}
+.tbl td{padding:8px;border-bottom:1px solid var(--line)}
+.tbl td.num{text-align:right}
+.tbl svg{width:18px;height:18px;vertical-align:-4px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal .wd{font-size:12px;text-align:center;color:var(--muted);font-weight:700}
+.cal .c{aspect-ratio:1;max-height:84px;background:var(--surface-2);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-variant-numeric:tabular-nums;gap:1px;min-width:0}
+.cal .c.blank{background:transparent}
+.cal .c.today{box-shadow:inset 0 0 0 2px var(--accent)}
+.cal .c .ic{display:flex;gap:2px;height:16px}
+.cal .c svg{width:15px;height:15px}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.badge{background:var(--surface);border-radius:14px;padding:14px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.badge .bn{font-weight:700;line-height:1.4}
+.badge .bd{font-size:12px;color:var(--muted);line-height:1.5}
+.badge.locked .bn{color:var(--muted)}
+.palbox{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:28px;align-items:center}
+@media (max-width:640px){.palbox{grid-template-columns:1fr}}
+.palstage{background:var(--surface);border-radius:24px;padding:18px;display:grid;place-items:center}
+.palstage img{width:100%;max-width:300px;height:auto;animation:bob 3.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.palname{display:flex;align-items:center;gap:4px;font-family:var(--font-display);font-weight:700;font-size:34px;line-height:1.25}
+.title-chip{display:inline-block;background:var(--wash);color:var(--ink);border-radius:999px;padding:3px 12px;font-size:14px;font-weight:700}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.gallery figure{margin:0;background:var(--surface);border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.gallery img{width:100%;height:120px;object-fit:contain}
+.gallery figcaption{font-size:12px;color:var(--ink-2);text-align:center;line-height:1.45}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink-2);font-weight:700}
+input,select,textarea{color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:46px;font-weight:500;width:100%;font-size:16px}
+textarea{min-height:120px;resize:vertical;font-size:14px;line-height:1.5}
+.mrow{border-left:4px solid var(--mc);padding:4px 0 4px 14px;display:flex;flex-direction:column;gap:10px}
+.mrow + .mrow{margin-top:18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.note{font-size:13px;color:var(--ink-2)}
+.pin{display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 0}
+.pindots{display:flex;gap:14px}
+.pindots i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--ink-2)}
+.pindots i.on{background:var(--ink-2)}
+.keypad{display:grid;grid-template-columns:repeat(3,76px);gap:10px}
+.keypad .btn{min-height:60px;font-size:22px}
+.overlay{position:fixed;inset:0;background:rgba(20,18,12,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.overlay.open{display:flex}
+.dialog{background:var(--surface);color:var(--ink);border-radius:22px;max-width:500px;width:100%;max-height:calc(100% - 8px);overflow:auto;padding:22px 24px;display:flex;flex-direction:column;gap:14px}
+.dialog h3{font-family:var(--font-display);font-weight:700;font-size:22px;margin:0;text-wrap:balance;line-height:1.4}
+.dialog .btnrow{margin-top:4px}
+.dialog .scene{width:180px;height:160px;object-fit:contain;margin:0 auto}
+.dialog .scene-note{margin:-4px 0 0;text-align:center;font-size:14px;color:var(--ink-2)}
+.moods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.moods .btn{flex-direction:column;min-height:112px;gap:6px}
+.moods .btn svg{width:56px;height:56px}
+.rscore{display:flex;flex-direction:column;align-items:center;gap:2px}
+.rpaws{display:flex;gap:10px}
+.rpaws span{display:inline-block;animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.rpaws svg{width:40px;height:40px}
+@keyframes pop{0%{transform:scale(.2);opacity:0}100%{transform:scale(1);opacity:1}}
+.score-big{font-family:var(--font-display);font-weight:700;font-size:56px;line-height:1.1}
+.score-big small{font-size:20px;margin-left:4px}
+.breakdown{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.breakdown span{background:var(--surface-2);border-radius:999px;padding:3px 12px;font-size:13px}
+.getbox{display:flex;gap:12px;align-items:center;background:var(--wash);border-radius:14px;padding:12px 14px}
+.getbox > svg{width:40px;height:40px;flex:none}
+.getbox img{width:64px;height:58px;object-fit:contain;flex:none}
+.getbox.plain{background:var(--surface-2)}
+.newbadge{display:flex;gap:12px;align-items:center}
+.newbadge svg{flex:none}
+.menu-list{display:flex;flex-direction:column;gap:10px}
+.menu-list .btn{justify-content:flex-start;text-align:left}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;z-index:70;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.nightsky{position:fixed;inset:0;z-index:60;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:24px;background:radial-gradient(ellipse at 50% 30%,#2E3524 0%,#171A12 70%,#10120C 100%);color:#F1ECDF;cursor:pointer;overflow:hidden}
+.nightsky.open{display:flex}
+.nightsky img{width:240px;height:auto;max-width:60vw;filter:drop-shadow(0 10px 30px rgba(0,0,0,.4))}
+.bubble{position:relative;display:inline-block;align-self:center;background:#FFFCF2;color:#2F2A22;border-radius:18px;padding:8px 18px;font-family:var(--font-display);font-weight:700;font-size:20px;box-shadow:0 6px 18px rgba(0,0,0,.12);animation:pop .5s cubic-bezier(.3,1.6,.5,1) both;margin:0 auto -4px}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-9px;border:9px solid transparent;border-bottom:0;border-top-color:#FFFCF2}
+.dialog .bubble{margin-bottom:-8px}
+.nightsky .nt{font-family:var(--font-display);font-weight:700;font-size:30px;margin:10px 0 0}
+.nightsky p{margin:0;font-size:17px;max-width:30em;text-wrap:balance}
+.nightsky .hint{color:#BDB6A3;font-size:14px;margin-top:14px}
+.nightsky .tw{position:absolute;width:3px;height:3px;border-radius:50%;background:#F5EFD8;animation:tw 3.4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.2}50%{opacity:.9}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media (max-width:480px){.app{padding:10px 14px 116px}.hero{padding-left:16px}.hero img{width:92px;height:84px}.hero .hl{font-size:18px}.score-big{font-size:48px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <img src="img/stand.webp" alt="" width="44" height="44">
+      <h1>ねむりノート</h1>
+      <span class="date" id="today-label"></span>
+    </div>
+    <button class="chip" id="theme-btn" data-act="theme" type="button"></button>
+  </header>
+  <main id="view" tabindex="-1"></main>
+</div>
+<nav class="tabs" aria-label="画面"><div class="inner" id="tabs"></div></nav>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true"><div class="dialog" id="dialog"></div></div>
+<div class="nightsky" id="nightsky" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast" role="status"></div>
+<div class="tut" id="tut" role="dialog" aria-modal="true" aria-label="家族で決めよう"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- 基本ユーティリティ ---------- */
+const KEY = 'nemuri-note-v1';
+const DAYS = ['日','月','火','水','木','金','土'];
+const pad = n => String(n).padStart(2,'0');
+const dstr = dt => `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;
+const dparse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+const addDays = (s,n) => { const d = dparse(s); d.setDate(d.getDate()+n); return dstr(d); };
+const diffDays = (a,b) => Math.round((dparse(b) - dparse(a)) / 86400000);
+const today = () => dstr(new Date());
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* 時刻は「その夜の日付の正午から何分後か」で持つ。21:15→555、0:30→750、翌6:30→1110 */
+const clockToOff = hhmm => { const [h,m] = hhmm.split(':').map(Number); const t = h*60+m; return t >= 720 ? t-720 : t+720; };
+const offToClock = o => { let t = (Math.round(o) + 720) % 1440; if (t < 0) t += 1440; return `${pad(Math.floor(t/60))}:${pad(t%60)}`; };
+const noonOf = d => { const x = dparse(d); x.setHours(12,0,0,0); return x; };
+const offAt = (d, dt) => Math.round((dt - noonOf(d)) / 60000);
+const nightOf = dt => dt.getHours() < 12 ? addDays(dstr(dt), -1) : dstr(dt);
+const lastNight = () => { const n = new Date(); return n.getHours() < 5 ? addDays(today(), -2) : addDays(today(), -1); };
+const tonight = () => { const n = new Date(); return n.getHours() < 5 ? addDays(today(), -1) : today(); };
+const durText = min => { const h = Math.floor(min/60), m = min % 60; return m ? `${h}時間${m}分` : `${h}時間`; };
+const durShort = min => `${Math.floor(min/60)}:${pad(min%60)}`;
+const mdText = s => { const d = dparse(s); return `${d.getMonth()+1}/${d.getDate()}`; };
+const mdwText = s => { const d = dparse(s); return `${d.getMonth()+1}/${d.getDate()}（${DAYS[d.getDay()]}）`; };
+const isWeekendNight = d => { const w = dparse(d).getDay(); return w === 5 || w === 6; };
+const round5 = x => Math.round(x/5)*5;
+const avg = a => a.length ? a.reduce((s,v)=>s+v,0)/a.length : null;
+const minusClock = (hhmm, min) => { const [h,m] = hhmm.split(':').map(Number); let t = ((h*60 + m - min) % 1440 + 1440) % 1440; return `${pad(Math.floor(t/60))}:${pad(t%60)}`; };
+
+/* ---------- 役 ---------- */
+const JOBS = {
+  leader:{name:'おやすみリーダー', task:'夜、「おやすみタイム」をアプリで宣言して、家族みんなにねる準備の合図を出す'},
+  check: {name:'朝のチェック係',   task:'朝、3人の「おはよう」が押されたか確かめて、押し忘れた人に声をかける'},
+  charge:{name:'充電台係',         task:'おやすみタイムになったら、家族のiPadとスマホを充電台に集める'},
+  reward:{name:'ごほうび係',       task:'週のごほうびと、月のイベントの準備をする'},
+  cheer: {name:'応援係',           task:'うまくいった朝に「よくできたね」と声をかける'},
+  custom:{name:'自分で決める',     task:''}
+};
+const jobName = m => m.job === 'custom' ? (m.jobName || '自分で決めた役') : (JOBS[m.job] || JOBS.cheer).name;
+const jobTask = m => m.job === 'custom' ? (m.jobTask || 'やることを決めよう') : (JOBS[m.job] || JOBS.cheer).task;
+const jobOpts = cur => Object.keys(JOBS).map(k => `<option value="${k}" ${k === cur ? 'selected' : ''}>${JOBS[k].name}</option>`).join('');
+const sleepOpts = cur => { let o = ''; for (let mm = 360; mm <= 660; mm += 15) o += `<option value="${mm}" ${mm === cur ? 'selected' : ''}>${Math.floor(mm/60)}時間${mm%60 ? (mm%60) + '分' : ''}</option>`; return o; };
+const leaders = () => S.members.filter(m => m.job === 'leader');
+
+/* ---------- 夜のじゅんび ---------- */
+/* 上から順番にやる。いちばん下のじゅんびが「おやすみタイム」におわるように、かかる時間から逆算して締め切りを出す */
+const PREP_DEFAULT = [
+  {id:'hw',    name:'宿題',               dur:30, who:'m1',     icon:'hw'},
+  {id:'bath',  name:'お風呂を出る',       dur:25, who:'m1',     icon:'bath'},
+  {id:'pjs',   name:'パジャマに着がえる', dur:5,  who:'m1',     icon:'pjs'},
+  {id:'dinS',  name:'ごはんスタート',     dur:15, who:'adults', icon:'dinS'},
+  {id:'dinE',  name:'ごはんおしまい',     dur:35, who:'m1',     icon:'dinE'},
+  {id:'free',  name:'自由時間',           dur:40, who:'all',    icon:'free', kind:'free'},
+  {id:'teeth', name:'歯みがき',           dur:10, who:'m1',     icon:'teeth'}
+];
+function defaultPrep(){ return PREP_DEFAULT.map(t => Object.assign({on:true}, t)); }
+function prepChain(tasks, anchor){
+  const on = (tasks || []).filter(t => t.on), out = [];
+  let cur = clockToOff(anchor);
+  for (let i = on.length - 1; i >= 0; i--){ const t = on[i]; out.unshift(Object.assign({}, t, {dl: offToClock(cur), from: offToClock(cur - t.dur)})); cur -= t.dur; }
+  return out;
+}
+const prepAll = () => prepChain(S.prep.tasks, S.declareTime);
+const prepTasks = () => prepAll().filter(t => t.kind !== 'free');
+const whoName = t => t.who === 'adults' ? 'おとな' : t.who === 'all' ? 'みんな' : ((member(t.who) || {}).name || '');
+function prepOK(night){
+  const kid = child().id, T = prepTasks().filter(t => t.who === kid), L = (S.prep.log || {})[night] || {};
+  if (!T.length || T.some(t => L[t.id] == null)) return false;
+  const limit = Math.max(clockToOff(S.declareTime), ...T.map(t => clockToOff(t.dl)));
+  return Math.max(...T.map(t => L[t.id])) <= limit;
+}
+
+/* アイコン（パステルのタイル） */
+const TI = {
+  hw:    {bg:'#E9E2F7', fg:'#6650B5', d:'<path d="M4 17.6V20h2.4L16.9 9.5l-2.4-2.4z"/><path d="M15.6 6l2.4 2.4 1.3-1.3a1 1 0 0 0 0-1.4L18.2 4.6a1 1 0 0 0-1.4 0z"/><path d="M3 21.5h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>'},
+  dinS:  {bg:'#FBE5CC', fg:'#B2601A', d:'<path d="M3 12h18c0 4.4-4 7.5-9 7.5S3 16.4 3 12z"/><path d="M8.5 9.5c-.9-1.2.9-2 0-3.3M12 9.5c-.9-1.2.9-2 0-3.3M15.5 9.5c-.9-1.2.9-2 0-3.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>'},
+  dinE:  {bg:'#FBE5CC', fg:'#B2601A', d:'<path d="M3 13h18c0 4-4 6.8-9 6.8S3 17 3 13z"/><path d="M13 11 20 4.2M10.5 11 17.8 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>'},
+  bath:  {bg:'#D9EAF8', fg:'#2D6CA6', d:'<path d="M2.5 12h19v1.6a5.4 5.4 0 0 1-5.4 5.4H7.9a5.4 5.4 0 0 1-5.4-5.4z"/><path d="M5.5 12V6.3a2.3 2.3 0 0 1 4.4-.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/><circle cx="14" cy="8.5" r="1.5"/><circle cx="17.5" cy="6" r="1.1"/><circle cx="17.8" cy="9.6" r=".9"/><path d="M6.5 19 5.6 21M17.5 19l.9 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>'},
+  pjs:   {bg:'#F7DFE6', fg:'#AD4864', d:'<path d="M8.2 3.2 3 6.1l2 4.2 2.2-1.1V21h9.6V9.2l2.2 1.1 2-4.2-5.2-2.9c-.6 1.6-2 2.5-3.8 2.5s-3.2-.9-3.8-2.5z"/><circle cx="12" cy="11" r=".9" fill="#fff"/><circle cx="12" cy="14.2" r=".9" fill="#fff"/><path d="M18.5 3.5a2.2 2.2 0 1 0 2 3 2.6 2.6 0 0 1-2-3z" />'},
+  futon: {bg:'#EEE6D6', fg:'#7A5D2E', d:'<rect x="3" y="6.5" width="8" height="4.5" rx="2"/><path d="M3 12.5h18v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M7 15.8h10" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>'},
+  teeth: {bg:'#D9F0E8', fg:'#2B8668', d:'<path d="M7.3 3.5c-2.6 0-4.1 2-4.1 4.5 0 2.9 1.5 4.6 2 7.6.4 2.5 1 5 2.5 5s1.9-3.9 4.3-3.9 2.8 3.9 4.3 3.9 2.1-2.5 2.5-5c.5-3 2-4.7 2-7.6 0-2.5-1.5-4.5-4.1-4.5-2 0-2.9 1-4.7 1s-2.7-1-4.7-1z"/><path d="M8.3 7.2c.4-.9 1.2-1.3 2.1-1.3" stroke="#fff" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".8"/>'},
+  free:  {bg:'#F6EBC2', fg:'#987210', d:'<path d="M12 2.8l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.7z"/>'},
+  bell:  {bg:'#F4E5BE', fg:'#85600F', d:'<path d="M12 3a5.6 5.6 0 0 0-5.6 5.6v3.6L4.8 15.6V17h14.4v-1.4l-1.6-3.4V8.6A5.6 5.6 0 0 0 12 3zM9.8 18.2a2.2 2.2 0 0 0 4.4 0z"/>'},
+  clip:  {bg:'#D9E5F3', fg:'#2C5D8C', d:'<path d="M6.5 4.5h2V6h7V4.5h2a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V6a1.5 1.5 0 0 1 1.5-1.5z"/><rect x="9" y="2.5" width="6" height="3.2" rx="1"/><path d="M8.6 13.6l2.3 2.3 4.6-4.8" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'},
+  plug:  {bg:'#D9F0E8', fg:'#2B8668', d:'<rect x="2.5" y="7.5" width="16" height="9" rx="2"/><rect x="19.2" y="10.2" width="2.3" height="3.6" rx=".8"/><path d="M11.3 8.8 7.8 12.6h3l-1 3.1 3.9-4h-3z" fill="#fff"/>'},
+  gift:  {bg:'#F7DFE0', fg:'#A8424E', d:'<rect x="3.5" y="9" width="17" height="3.6" rx="1"/><rect x="5" y="12.6" width="14" height="8" rx="1"/><rect x="11" y="9" width="2" height="11.6" fill="#fff" opacity=".85"/><path d="M12 9c-1.3-3-5.4-4.1-5.4-1.6S10 9 12 9zm0 0c1.3-3 5.4-4.1 5.4-1.6S14 9 12 9z"/>'},
+  heart: {bg:'#F7DFE6', fg:'#AD4864', d:'<path d="M12 20.3s-8.2-4.7-8.2-10.4A4.4 4.4 0 0 1 12 7.2a4.4 4.4 0 0 1 8.2 2.7c0 5.7-8.2 10.4-8.2 10.4z"/>'},
+  paw:   {bg:'#E7EBD2', fg:'#5D6B26', d:'<path d="M12 11.2c3.2 0 5.6 2.6 5.6 5 0 1.9-1.6 3-3.3 3-1 0-1.6-.5-2.3-.5s-1.3.5-2.3.5c-1.7 0-3.3-1.1-3.3-3 0-2.4 2.4-5 5.6-5zM5.8 7.6a2.1 2.5 0 1 1 0 5 2.1 2.5 0 0 1 0-5zM18.2 7.6a2.1 2.5 0 1 1 0 5 2.1 2.5 0 0 1 0-5zM9.3 3.6a2.2 2.6 0 1 1 0 5.2 2.2 2.6 0 0 1 0-5.2zM14.7 3.6a2.2 2.6 0 1 1 0 5.2 2.2 2.6 0 0 1 0-5.2z"/>'}
+};
+const ICON_CYCLE = ['hw','dinS','dinE','bath','pjs','futon','teeth','free','paw','gift','heart','bell'];
+const tile = (k, size=40, extra='') => { const t = TI[k] || TI.paw; return `<span class="ti" style="width:${size}px;height:${size}px;background:${t.bg};color:${t.fg}" ${extra}><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">${t.d}</svg></span>`; };
+const JOB_ICON = {leader:'bell', check:'clip', charge:'plug', reward:'gift', cheer:'heart', custom:'paw'};
+const checkOn = (s=22) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><path d="M9.5 16.2 5.3 12l-1.4 1.4 5.6 5.6 11-11-1.4-1.4z" fill="var(--stamp)"/></svg>`;
+
+/* ---------- 状態 ---------- */
+const PAL_DEFAULT = 'ねむねこ';
+function freshState(){
+  return {
+    v:2, demo:false, start: today(),
+    members:[
+      {id:'m1', name:'こども', role:'child',  lo:'21:15', sleep:540, wake:'06:30', job:'leader'},
+      {id:'m2', name:'パパ',   role:'parent', lo:'23:00', sleep:420, wake:'06:30', job:'reward'},
+      {id:'m3', name:'ママ',   role:'parent', lo:'22:45', sleep:420, wake:'06:15', job:'cheer'}
+    ],
+    declareTime:'20:45', declares:{}, onboarded:false,
+    prep:{v:3, tasks: defaultPrep(), log:{}},
+    entries:{m1:{}, m2:{}, m3:{}},
+    badges:{m1:{}, m2:{}, m3:{}},
+    rewards:{weekly:{}, monthly:{}},
+    menu:['夕ごはんのメニューを決められる','休みの日の朝ごはんを決められる','行きたい公園・図書館を決められる','好きな本を1さつ','休みの日のお昼にゲーム30分プラス'],
+    monthlyReward:'家族でおでかけ（行き先はこどもが決める）',
+    pal:{name:PAL_DEFAULT},
+    pin:'0000'
+  };
+}
+let storageOK = true;
+function loadState(){
+  try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; }
+  catch(e){ storageOK = false; return null; }
+}
+let persistAsked = false;
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(S)); storageOK = true; }
+  catch(e){ storageOK = false; }
+  if (!persistAsked){ persistAsked = true; try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch(e){} }
+}
+function migrate(o){
+  const f = freshState();
+  const s = Object.assign(f, o || {});
+  s.members.forEach(m => {
+    s.entries[m.id] = s.entries[m.id] || {};
+    s.badges[m.id] = s.badges[m.id] || {};
+  });
+  s.rewards = Object.assign({weekly:{}, monthly:{}}, s.rewards || {});
+  s.pal = Object.assign({name:PAL_DEFAULT}, s.pal || {});
+  if (s.pal.name === 'ねむりん') s.pal.name = PAL_DEFAULT;
+  const defJob = {m1:'leader', m2:'reward', m3:'cheer'};
+  s.members.forEach(m => { if (!m.job) m.job = defJob[m.id] || 'cheer'; });
+  s.declares = s.declares || {};
+  if (!s.declareTime) s.declareTime = minusClock(s.members[0].lo, 30);
+  if (!s.prep) s.prep = {v:3, tasks: defaultPrep(), log:{}};
+  if (s.prep.v !== 2 && s.prep.v !== 3){ s.prep.tasks = defaultPrep(); s.prep.v = 3; }
+  if (s.prep.v === 2){
+    /* 布団を敷くをなくし、お風呂（とパジャマ）をごはんの前へ */
+    let T = s.prep.tasks.filter(t => t.id !== 'futon');
+    const moving = T.filter(t => t.id === 'bath' || t.id === 'pjs'), rest = T.filter(t => t.id !== 'bath' && t.id !== 'pjs');
+    const at = rest.findIndex(t => t.id === 'dinS' || t.id === 'dinE');
+    if (at >= 0) rest.splice(at, 0, ...moving); else rest.push(...moving);
+    s.prep.tasks = rest; s.prep.v = 3;
+  }
+  s.prep.log = s.prep.log || {};
+  delete s.voice;
+  s.v = 2;
+  return s;
+}
+let S;
+
+/* ---------- 点数 ---------- */
+function scoreOf(m, d, e){
+  if (!e || e.lo == null || e.wk == null) return null;
+  const we = isWeekendNight(d);
+  const late = Math.max(0, e.lo - (clockToOff(m.lo) + (we ? 30 : 0)));
+  const sLo = Math.max(0, 50 - 5*Math.floor(late/10));
+  const dur = e.wk - e.lo;
+  const short = Math.max(0, m.sleep - dur);
+  const sSl = Math.max(0, 40 - 5*Math.floor(short/15));
+  const diff = e.wk - clockToOff(m.wake);
+  const okW = we ? (diff >= -30 && diff <= 90) : Math.abs(diff) <= 30;
+  const sWk = okW ? 10 : 0;
+  return {total: sLo + sSl + sWk, sLo, sSl, sWk, dur, late};
+}
+const pawsOf = t => t >= 90 ? 3 : t >= 70 ? 2 : t >= 50 ? 1 : 0;
+const needFor = L => 300 + 100*(L-1);
+function levelOf(p){ let L = 1, rem = p; while (rem >= needFor(L)) { rem -= needFor(L); L++; } return {L, into:rem, need:needFor(L)}; }
+const weekIndex = d => Math.floor(diffDays(S.start, d) / 7);
+const weekNights = wi => Array.from({length:7}, (_,k) => addDays(S.start, wi*7 + k));
+function isFullMoon(d){
+  const dt = dparse(d); dt.setHours(21);
+  const syn = 29.530588853, ref = Date.UTC(2000,0,6,18,14);
+  let age = ((dt.getTime() - ref) / 86400000) % syn; if (age < 0) age += syn;
+  return Math.abs(age - 14.77) < 1.0;
+}
+const TITLES = [
+  {from:1,  t:'ねむり見習い'},
+  {from:3,  t:'早ねルーキー'},
+  {from:5,  t:'リズムキーパー'},
+  {from:8,  t:'早ねの達人'},
+  {from:12, t:'ねむりマスター'}
+];
+const titleIdx = L => TITLES.reduce((s, x, i) => L >= x.from ? i : s, 0);
+
+/* すべての集計。upto＝評価する最後の夜（既定は「ゆうべ」） */
+function analyze(uptoArg){
+  const upto = uptoArg || lastNight();
+  const displayTo = uptoArg ? uptoArg : tonight();
+  const curWeek = Math.max(0, weekIndex(today()));
+  const nights = [];
+  for (let d = S.start; d <= displayTo; d = addDays(d,1)) nights.push(d);
+  const out = {upto, curWeek, members:{}, family:{}};
+  for (const m of S.members){
+    const E = S.entries[m.id] || (S.entries[m.id] = {});
+    const final = clockToOff(m.lo);
+    const steps = [null];
+    const stampAt = d => {
+      const wi = weekIndex(d); if (wi < 0) return false;
+      const e = E[d]; if (!e || e.lo == null || e.wk == null) return false;
+      if (wi === 0) return true;
+      const t = steps[wi]; if (t == null) return false;
+      return e.lo <= t + (isWeekendNight(d) ? 30 : 0);
+    };
+    const lastW = Math.max(curWeek, weekIndex(displayTo));
+    for (let i = 1; i <= lastW; i++){
+      if (i === 1){
+        const arr = [];
+        for (let k = 0; k < 7; k++){ const d = addDays(S.start,k), e = E[d]; if (e && e.lo != null) arr.push(e.lo - (isWeekendNight(d) ? 30 : 0)); }
+        steps[1] = arr.length ? Math.max(final, round5(avg(arr) - 15)) : final;
+      } else {
+        let c = 0; for (let k = 0; k < 7; k++) if (stampAt(addDays(S.start, (i-1)*7 + k))) c++;
+        steps[i] = c >= 4 ? Math.max(final, steps[i-1] - 15) : steps[i-1];
+      }
+    }
+    const stamp = {}, score = {};
+    let records = 0, stamps = 0, goalStamps = 0, maxScore = 0, bestUpd = 0, prevMax = -1, scored = 0, early = 0, fullMoon = 0, points = 0;
+    for (const d of nights){
+      const e = E[d];
+      stamp[d] = stampAt(d);
+      const sc = scoreOf(m, d, e); if (sc) score[d] = sc;
+      if (d > upto) continue;
+      if (e && (e.lo != null || e.wk != null)) records++;
+      if (stamp[d]){ stamps++; if (weekIndex(d) >= 1) goalStamps++; }
+      if (sc){
+        points += sc.total;
+        if (scored >= 3 && sc.total > prevMax) bestUpd++;
+        prevMax = Math.max(prevMax, sc.total); scored++;
+        maxScore = Math.max(maxScore, sc.total);
+      }
+      if (e && e.lo != null){
+        const wi = weekIndex(d);
+        const base = (wi >= 1 && steps[wi] != null) ? steps[wi] : final;
+        if (e.lo <= base + (isWeekendNight(d) ? 30 : 0) - 30) early++;
+      }
+      if (stamp[d] && isFullMoon(d)) fullMoon++;
+    }
+    let streak = 0, maxStreak = 0; const ticketUsed = {};
+    for (const d of nights){
+      if (d > upto) break;
+      const e = E[d], wi = weekIndex(d);
+      if (d === upto && (!e || e.wk == null)) break;
+      if (stamp[d]){ streak++; maxStreak = Math.max(maxStreak, streak); }
+      else if (!ticketUsed[wi]) ticketUsed[wi] = d;
+      else streak = 0;
+    }
+    let weekendBoth = 0;
+    for (const d of nights){
+      if (d > upto) break;
+      if (dparse(d).getDay() === 5){ const s = addDays(d,1); if (s <= upto && stamp[d] && stamp[s]) weekendBoth++; }
+    }
+    const declares = Object.keys(S.declares || {}).filter(d => d <= displayTo && S.declares[d].mid === m.id).length;
+    const prep = m.id === child().id ? nights.filter(d => prepOK(d)).length : 0;
+    out.members[m.id] = {m, final, steps, stamp, score, records, stamps, goalStamps, maxScore, bestUpd, early, fullMoon, points, lv: levelOf(points), streak, maxStreak, ticketUsed, weekendBoth, declares, prep};
+  }
+  let familyCount = 0, all100 = 0;
+  for (const d of nights){
+    const all = S.members.every(m => out.members[m.id].stamp[d]);
+    out.family[d] = all;
+    if (d <= upto){
+      if (all) familyCount++;
+      if (S.members.every(m => { const sc = out.members[m.id].score[d]; return sc && sc.total === 100; })) all100++;
+    }
+  }
+  for (const m of S.members){ out.members[m.id].family = familyCount; out.members[m.id].all100 = all100; }
+  return out;
+}
+const member = id => S.members.find(m => m.id === id);
+const child = () => S.members.find(m => m.role === 'child') || S.members[0];
+const weekStampCount = (A, mid, wi) => weekNights(wi).filter(d => A.members[mid].stamp[d]).length;
+const monthFamilyCount = (A, mk) => Object.keys(A.family).filter(d => d.slice(0,7) === mk && A.family[d]).length;
+const homeWeek = A => { const h = new Date().getHours(); const d = (h >= 5 && h < 12) ? A.upto : tonight(); return Math.max(0, weekIndex(d)); };
+const stepTonight = (a) => { const d = tonight(); const wi = Math.max(0, weekIndex(d)); const s = a.steps[wi]; return s == null ? null : s + (isWeekendNight(d) ? 30 : 0); };
+
+function pendingNight(mid){
+  const E = S.entries[mid] || {}; const n = new Date();
+  for (const d of [today(), addDays(today(), -1)]){
+    const e = E[d];
+    if (e && e.lo != null && e.wk == null){ const o = offAt(d, n); if (o >= e.lo - 5 && o < 1440) return d; }
+  }
+  return null;
+}
+
+/* ---------- バッジ ---------- */
+const BADGES = [
+  {id:'first',  name:'はじめの一歩',   desc:'はじめて記録した',               icon:'foot',    color:'olive', test:c => c.records >= 1},
+  {id:'goal1',  name:'はじめての達成', desc:'はじめて目標を守った',            icon:'paw',     color:'olive', test:c => c.goalStamps >= 1},
+  {id:'s10',    name:'スタンプ10',     desc:'スタンプを10こ集めた',            icon:'n:10',    color:'matcha', test:c => c.stamps >= 10},
+  {id:'s30',    name:'スタンプ30',     desc:'スタンプを30こ集めた',            icon:'n:30',    color:'matcha', test:c => c.stamps >= 30},
+  {id:'s50',    name:'スタンプ50',     desc:'スタンプを50こ集めた',            icon:'n:50',    color:'matcha', test:c => c.stamps >= 50},
+  {id:'s100',   name:'スタンプ100',    desc:'スタンプを100こ集めた',           icon:'n:100',   color:'matcha', test:c => c.stamps >= 100},
+  {id:'r3',     name:'3日連続',        desc:'3日続けてスタンプ',               icon:'flame:3', color:'rose',  test:c => c.maxStreak >= 3},
+  {id:'r7',     name:'7日連続',        desc:'7日続けてスタンプ',               icon:'flame:7', color:'rose',  test:c => c.maxStreak >= 7},
+  {id:'r14',    name:'14日連続',       desc:'14日続けてスタンプ',              icon:'flame:14',color:'rose',  test:c => c.maxStreak >= 14},
+  {id:'team',   name:'チーム結成',     desc:'はじめて家族スタンプ',            icon:'house',   color:'blue',  test:c => c.family >= 1},
+  {id:'f10',    name:'家族スタンプ10', desc:'家族スタンプが10こ',              icon:'house:10',color:'blue',  test:c => c.family >= 10},
+  {id:'best',   name:'自己ベスト',     desc:'自分の最高点を更新した',          icon:'up',      color:'gold',  test:c => c.bestUpd >= 1},
+  {id:'perfect',name:'100点',          desc:'はじめて100点をとった',           icon:'crown',   color:'gold',  test:c => c.maxScore >= 100},
+  {id:'weekend',name:'週末もばっちり', desc:'金曜・土曜の夜どちらもスタンプ',  icon:'sun',     color:'brown', test:c => c.weekendBoth >= 1},
+  {id:'decl1',  name:'はじめての宣言', desc:'おやすみタイムをはじめて宣言した', icon:'bell',    color:'olive', leaderOnly:true, test:c => c.declares >= 1},
+  {id:'decl10', name:'宣言10回',       desc:'おやすみタイムを10回宣言した',     icon:'bell:10', color:'olive', leaderOnly:true, test:c => c.declares >= 10},
+  {id:'prep1',  name:'準備バッチリ',     desc:'ねる前のじゅんびを、おやすみタイムまでに全部おえた', icon:'check',   color:'matcha', kidOnly:true, test:c => c.prep >= 1},
+  {id:'prep7',  name:'準備バッチリ7回',  desc:'準備バッチリの日が7回',                         icon:'check:7', color:'matcha', kidOnly:true, test:c => c.prep >= 7},
+  {id:'early',  name:'早ね名人',       desc:'目標より30分早くおやすみ',        icon:'moon',    color:'night', hidden:true, test:c => c.early >= 1},
+  {id:'fullmoon',name:'満月の夜',      desc:'満月の夜にスタンプ',              icon:'fullmoon',color:'night', hidden:true, test:c => c.fullMoon >= 1},
+  {id:'all100', name:'みんな100点',    desc:'家族全員が同じ夜に100点',         icon:'trio',    color:'night', hidden:true, test:c => c.all100 >= 1}
+];
+function unlockBadges(A, date){
+  const fresh = {};
+  for (const m of S.members){
+    const c = A.members[m.id]; const got = S.badges[m.id] || (S.badges[m.id] = {});
+    for (const b of BADGES){ if (!got[b.id] && b.test(c)){ got[b.id] = date; (fresh[m.id] = fresh[m.id] || []).push(b); } }
+  }
+  return fresh;
+}
+
+/* ---------- イラスト（娘さん作のキャラクター） ---------- */
+const IMG = {
+  stand:   {src:'img/stand.webp',   cap:'キャラ画面・昼のホーム画面'},
+  wake:    {src:'img/wake.webp',    cap:'よくねむれた朝・朝のホーム画面'},
+  stamp:   {src:'img/stamp.webp',   cap:'スタンプをもらった朝'},
+  stretch: {src:'img/stretch.webp', cap:'まずまずの朝（50〜69点）'},
+  reward:  {src:'img/reward.webp',  cap:'週のごほうびを選ぶとき'},
+  levelup: {src:'img/levelup.webp', cap:'レベルアップしたとき'},
+  badge:   {src:'img/badge.webp',   cap:'バッジをもらったとき'},
+  family:  {src:'img/family.webp',  cap:'家族スタンプ・月のイベント'},
+  teeth:   {src:'img/teeth.webp',   cap:'夕方から夜のホーム画面'},
+  charge:  {src:'img/charge.webp',  cap:'「おやすみ」を押したとき'},
+  futon:   {src:'img/futon.webp',   cap:'夜おそくのホーム画面'},
+  curl:    {src:'img/curl.webp',    cap:'おやすみ中のカード'},
+  yawn:    {src:'img/yawn.webp',    cap:'ねぶそくの朝（こども）'},
+  laptop:  {src:'img/laptop.webp',  cap:'夜ふかしの朝（おとな）'},
+  bell:    {src:'img/bell.webp',    cap:'おやすみタイムの宣言・おやすみリーダー'},
+  allcheck:{src:'img/allcheck.webp',cap:'準備バッチリ'},
+  hw:      {src:'img/hw.webp',      cap:'つぎのじゅんび：宿題'},
+  dinner:  {src:'img/dinner.webp',  cap:'つぎのじゅんび：ごはん'},
+  bath:    {src:'img/bath.webp',    cap:'つぎのじゅんび：お風呂'},
+  pjs:     {src:'img/pjs.webp',     cap:'つぎのじゅんび：パジャマ'},
+  reading: {src:'img/reading.webp', cap:'自由時間', photo:true},
+  checker: {src:'img/checker.webp', cap:'朝のチェック係'},
+  cheer:   {src:'img/cheer.webp',   cap:'応援係'},
+  papa:    {src:'img/papa.webp',    cap:'パパ（家族のアイコン）'},
+  mama:    {src:'img/mama.webp',    cap:'ママ（家族のアイコン）'},
+  outing:  {src:'img/outing.webp',  cap:'月のおでかけが決まったとき'},
+  ticket:  {src:'img/ticket.webp',  cap:'おやすみチケット'},
+  face_good:  {src:'img/face_good.webp',   cap:'気分：すっきり'},
+  face_ok:    {src:'img/face_ok.webp',     cap:'気分：ふつう'},
+  face_sleepy:{src:'img/face_sleepy.webp', cap:'気分：ねむい'}
+};
+const pic = (k, cls='', alt='') => { const e = IMG[k] || IMG.stand; return `<img src="${e.src}" class="${cls}${e.photo ? ' photo' : ''}" alt="${esc(alt)}" loading="lazy" decoding="async">`; };
+const JOB_IMG = {leader:'bell', check:'checker', charge:'charge', reward:'reward', cheer:'cheer', custom:'stand'};
+const AVATARS = ['stand','papa','mama'];
+const avatarOf = m => m.avatar || (m.role === 'child' ? 'stand' : m.id === 'm2' ? 'papa' : m.id === 'm3' ? 'mama' : 'stand');
+const PREP_IMG = {hw:'hw', dinS:'dinner', dinE:'dinner', bath:'bath', pjs:'pjs', futon:'futon', teeth:'teeth', free:'reading', gift:'reward', heart:'cheer', bell:'bell'};
+
+/* ---------- アイコン（SVG） ---------- */
+const PAW = 'M12 11.2c3.2 0 5.6 2.6 5.6 5 0 1.9-1.6 3-3.3 3-1 0-1.6-.5-2.3-.5s-1.3.5-2.3.5c-1.7 0-3.3-1.1-3.3-3 0-2.4 2.4-5 5.6-5zM5.8 7.6a2.1 2.5 0 1 1 0 5 2.1 2.5 0 0 1 0-5zM18.2 7.6a2.1 2.5 0 1 1 0 5 2.1 2.5 0 0 1 0-5zM9.3 3.6a2.2 2.6 0 1 1 0 5.2 2.2 2.6 0 0 1 0-5.2zM14.7 3.6a2.2 2.6 0 1 1 0 5.2 2.2 2.6 0 0 1 0-5.2z';
+const P = {
+  moon:'M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.8 8.8 0 1 0 11.1 11.1z',
+  house:'M3 11.2 12 3.5l9 7.7V20a1 1 0 0 1-1 1h-5.2v-5.8H9.2V21H4a1 1 0 0 1-1-1z',
+  flame:'M12 2.5c.9 3.4 5.2 5.4 5.2 10.2A5.2 5.2 0 0 1 12 18a5.2 5.2 0 0 1-5.2-5.3c0-2.6 1.5-3.9 2.6-5.2.3 1.7 1.2 2.7 2.4 2.9-.5-2.8-.4-5.4.2-7.9z',
+  crown:'M3 8.5l4.6 3.9L12 5l4.4 7.4L21 8.5 19.2 19H4.8z',
+  bell:'M12 3a5.6 5.6 0 0 0-5.6 5.6v3.6L4.8 15.6V17h14.4v-1.4l-1.6-3.4V8.6A5.6 5.6 0 0 0 12 3zM9.8 18.2a2.2 2.2 0 0 0 4.4 0z',
+  check:'M9.5 16.2 5.3 12l-1.4 1.4 5.6 5.6 11-11-1.4-1.4z',
+  up:'M12 3l7 7.5h-4.5V21h-5V10.5H5z',
+  ticket:'M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6z'
+};
+const svgI = d => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="currentColor"/></svg>`;
+const ICON = {
+  moon: svgI(P.moon), house: svgI(P.house), bell: svgI(P.bell), check: svgI(P.check), flame: svgI(P.flame), ticket: svgI(P.ticket), paw: svgI(PAW),
+  sun: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><g stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 2.5v2.3M12 19.2v2.3M2.5 12h2.3M19.2 12h2.3M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>`,
+  pencil: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="2"/></svg>`,
+  chevL: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  chevR: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  tabHome: svgI(P.house),
+  tabLog: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="11" width="4" height="9" rx="1.4" fill="currentColor"/><rect x="10" y="6" width="4" height="14" rx="1.4" fill="currentColor"/><rect x="16.5" y="9" width="4" height="11" rx="1.4" fill="currentColor"/></svg>`,
+  tabBadge: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="7" fill="currentColor"/><path d="M8 3h3l1 4-3 1zM16 3h-3l-1 4 3 1z" fill="currentColor"/></svg>`,
+  tabPal: svgI(PAW),
+  badgeIcon: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="10" r="6" fill="currentColor"/><path d="M8.5 15l-1.5 6 5-2.5 5 2.5-1.5-6" fill="currentColor"/></svg>`,
+  tabKey: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12.5 12H21M18 12v3.5M21 12v2.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>`
+};
+const pawOn = (s=22) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><path d="${PAW}" fill="var(--stamp)"/></svg>`;
+const pawOff = (s=22) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><path d="${PAW}" fill="var(--line)"/></svg>`;
+const houseOn = (s=22) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><path d="${P.house}" fill="var(--stamp)"/></svg>`;
+const pawsHTML = n => `<span class="paws" aria-label="肉球${n}こ">${[0,1,2].map(i => i < n ? pawOn(17) : pawOff(17)).join('')}</span>`;
+
+const MEDAL = {
+  olive:{bg:'#E3E8CC',fg:'#4F5E1C'}, matcha:{bg:'#DCEAC2',fg:'#3E671D'}, rose:{bg:'#F4DADB',fg:'#9A3E49'},
+  blue:{bg:'#D8E5F2',fg:'#2C5D8C'}, gold:{bg:'#F3E4BC',fg:'#85600F'}, brown:{bg:'#EEDFCB',fg:'#6C4A29'}, night:{bg:'#2F3524',fg:'#E4DDA4'}
+};
+function glyph(icon, fg){
+  const [k, n] = icon.split(':');
+  const g = d => `<g transform="translate(17 16) scale(1.25)"><path d="${d}" fill="${fg}"/></g>`;
+  const num = (v, y, fs) => `<text x="32" y="${y}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="${fg}" font-family="Zen Maru Gothic, sans-serif">${v}</text>`;
+  switch (k){
+    case 'n': return `<g transform="translate(25.5 9) scale(.55)"><path d="${PAW}" fill="${fg}"/></g>` + num(n, 45, String(n).length >= 3 ? 16 : 20);
+    case 'paw': return g(PAW);
+    case 'check': return n ? `<g transform="translate(22 9) scale(.85)"><path d="${P.check}" fill="${fg}"/></g>` + num(n, 49, 12) : g(P.check);
+    case 'bell': return n ? `<g transform="translate(22 9) scale(.85)"><path d="${P.bell}" fill="${fg}"/></g>` + num(n, 49, 12) : g(P.bell);
+    case 'flame': return `<g transform="translate(22 10) scale(.85)"><path d="${P.flame}" fill="${fg}"/></g>` + num(n, 49, 12);
+    case 'house': return n ? `<g transform="translate(22 11) scale(.85)"><path d="${P.house}" fill="${fg}"/></g>` + num(n, 49, 12) : g(P.house);
+    case 'up': return g(P.up);
+    case 'crown': return g(P.crown);
+    case 'moon': return g(P.moon);
+    case 'sun': return `<circle cx="32" cy="32" r="7" fill="${fg}"/><g stroke="${fg}" stroke-width="2.6" stroke-linecap="round"><path d="M32 17v4M32 43v4M17 32h4M43 32h4M21.4 21.4l2.8 2.8M39.8 39.8l2.8 2.8M21.4 42.6l2.8-2.8M39.8 24.2l2.8-2.8"/></g>`;
+    case 'fullmoon': return `<circle cx="32" cy="32" r="12" fill="${fg}"/><circle cx="27.5" cy="28.5" r="2.6" fill="#2F3524" opacity=".25"/><circle cx="36" cy="36.5" r="2" fill="#2F3524" opacity=".25"/>`;
+    case 'trio': return `<g fill="${fg}"><circle cx="21" cy="26" r="4.6"/><circle cx="32" cy="22.5" r="5"/><circle cx="43" cy="26" r="4.6"/><path d="M14 44c0-6 3-9 7-9s7 3 7 9zM25 44c0-7 3-11 7-11s7 4 7 11zM36 44c0-6 3-9 7-9s7 3 7 9z"/></g>`;
+    case 'foot': return `<g fill="${fg}"><ellipse cx="26" cy="37" rx="5" ry="8" transform="rotate(-12 26 37)"/><ellipse cx="39" cy="29" rx="4.6" ry="7.5" transform="rotate(12 39 29)"/><circle cx="22.5" cy="25.5" r="2"/><circle cx="27.5" cy="24.5" r="1.8"/><circle cx="36" cy="17.5" r="1.8"/><circle cx="41.5" cy="18" r="1.9"/></g>`;
+  }
+  return '';
+}
+function medal(b, on, size=64){
+  if (!on){
+    const inner = b.hidden ? `<text x="32" y="41" text-anchor="middle" font-size="24" font-weight="700" fill="var(--muted)">?</text>` : glyph(b.icon, 'var(--muted)');
+    return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="var(--surface-2)" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 4"/><g opacity=".55">${inner}</g></svg>`;
+  }
+  const c = MEDAL[b.color];
+  return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="${c.bg}"/><circle cx="32" cy="32" r="25.5" fill="none" stroke="${c.fg}" stroke-opacity=".28" stroke-width="1.5"/>${glyph(b.icon, c.fg)}</svg>`;
+}
+const MOOD_LABEL = {1:'すっきり', 2:'ふつう', 3:'ねむい'};
+
+/* ---------- 画面の状態 ---------- */
+const UI = {view:'home', logMember:null, logPeriod:'week', logMonth:null, logYearEnd:null, logWeek:null, calMonth:null, badgeMember:null, otonaOpen:false, pin:'', theme:null, flow:null, exportText:'', editPick:null};
+const VIEWS = [
+  {id:'home',   label:'ホーム', icon:'tabHome'},
+  {id:'kiroku', label:'記録',   icon:'tabLog'},
+  {id:'badge',  label:'バッジ', icon:'tabBadge'},
+  {id:'chara',  label:'キャラ', icon:'tabPal'},
+  {id:'otona',  label:'おとな', icon:'tabKey'}
+];
+const $ = s => document.querySelector(s);
+
+function autoTheme(){ const h = new Date().getHours(); return (h >= 17 || h < 6) ? 'night' : 'day'; }
+function applyTheme(){
+  const th = UI.theme || autoTheme();
+  document.documentElement.classList.toggle('night', th === 'night');
+  $('#meta-theme').setAttribute('content', th === 'night' ? '#171A14' : '#F3EEE3');
+  $('#theme-btn').innerHTML = (th === 'night' ? ICON.moon + '夜の表示' : ICON.sun + '朝の表示') + (UI.theme ? '' : '（自動）');
+}
+
+let toastTimer;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200); }
+
+function openDialog(html){ $('#dialog').innerHTML = html; $('#overlay').classList.add('open'); const f = $('#dialog').querySelector('input,button,select,textarea'); if (f) f.focus({preventScroll:true}); }
+function closeDialog(){ $('#overlay').classList.remove('open'); $('#dialog').innerHTML = ''; }
+let confirmFn = null;
+function confirmBox(text, okLabel, fn, danger){
+  confirmFn = fn;
+  openDialog(`<h3>${text}</h3><div class="btnrow"><button class="btn" data-act="close" type="button">やめる</button><button class="btn ${danger ? 'danger' : 'primary'}" data-act="confirm-ok" type="button">${okLabel}</button></div>`);
+}
+function renameDialog(target){
+  const isPal = target === 'pal';
+  const cur = isPal ? S.pal.name : member(target).name;
+  openDialog(`<h3>${isPal ? 'キャラクターの名前' : '名前を変える'}</h3>
+    <div class="field"><label for="rename-input">${isPal ? 'キャラクターの名前' : '表示する名前'}</label><input id="rename-input" maxlength="10" value="${esc(cur)}" autocomplete="off"></div>
+    <p class="small" id="rename-err" style="margin:0;color:var(--warn)" role="alert"></p>
+    <div class="btnrow"><button class="btn" data-act="close" type="button">やめる</button><button class="btn primary" data-act="rename-save" data-target="${target}" type="button">保存</button></div>`);
+  const i = $('#rename-input'); if (i){ i.select(); }
+}
+function renameSave(target){
+  const v = ($('#rename-input').value || '').trim();
+  if (!v){ $('#rename-err').textContent = '名前を入れてください'; return; }
+  if (target === 'pal') S.pal.name = v; else member(target).name = v;
+  save(); closeDialog(); toast('名前を変えました'); render();
+}
+
+/* ---------- 描画 ---------- */
+function render(){
+  applyTheme();
+  const n = new Date();
+  $('#today-label').textContent = `${n.getMonth()+1}月${n.getDate()}日（${DAYS[n.getDay()]}）`;
+  $('#tabs').innerHTML = VIEWS.map(v => `<button type="button" data-act="nav" data-view="${v.id}" ${UI.view === v.id ? 'aria-current="page"' : ''}>${ICON[v.icon]}${v.label}</button>`).join('');
+  const A = analyze();
+  const el = $('#view');
+  if (UI.view === 'home') el.innerHTML = renderHome(A);
+  else if (UI.view === 'kiroku'){ el.innerHTML = renderLog(A); drawCharts(A); }
+  else if (UI.view === 'badge') el.innerHTML = renderBadges(A);
+  else if (UI.view === 'chara') el.innerHTML = renderPal(A);
+  else el.innerHTML = renderOtona(A);
+}
+
+const hasRecords = () => S.members.some(m => Object.keys(S.entries[m.id] || {}).length > 0);
+function banners(){
+  let h = '';
+  if (S.demo) h += `<div class="banner"><span>いまは<b>デモデータ（18日分）</b>が入っています。こどもは「おやすみ中」なので、まず「おはよう」を押してみてください。</span><button class="btn small ghost" data-act="tut-start" type="button">家族で決めて本番をはじめる</button></div>`;
+  if (!S.demo && !S.onboarded) h += `<div class="banner"><span>まだ家族の設定がおわっていません。名前・目標・役などを、家族で決めましょう。</span><button class="btn small primary" data-act="tut-start" type="button">家族で決める</button></div>`;
+  if (!S.demo && S.onboarded && hasRecords() && diffDays(S.lastBackup || S.start, today()) >= 30) h += `<div class="banner"><span>前回のバックアップから30日以上たちました。おとな画面の「データ」から、ファイルに保存してください。</span><button class="btn small ghost" data-act="nav" data-view="otona" type="button">おとな画面へ</button></div>`;
+  if (!storageOK) h += `<div class="banner"><span>この画面ではデータを保存できません。画面を閉じると記録が消えます。</span></div>`;
+  return h;
+}
+
+function renderHome(A){
+  const h = new Date().getHours();
+  let hl, sub, img;
+  if (h >= 5 && h < 11){ hl = 'おはよう。起きたら「おはよう」を押そう'; sub = '昨日の夜の点数とスタンプがもらえます'; img = 'wake'; }
+  else if (h >= 11 && h < 17){ hl = '今夜の目標をチェックしておこう'; sub = '目標の時間は、カードの下に出ています'; img = 'stand'; }
+  else if (h >= 17 && h < 21){ hl = 'ねる前に「おやすみ」を押してね'; sub = '歯みがきが終わったら、iPadを充電台に置いて布団へ'; img = 'teeth'; }
+  else { hl = 'ねる時間です。「おやすみ」を押そう'; sub = '押したら、iPadを充電台に置いてから布団へ'; img = 'futon'; }
+  let extra = '';
+  const L = leaders(), lnames = L.map(m => esc(m.name)).join('・');
+  if (h >= 15 || h < 5){
+    const tn = tonight(), dec = S.declares[tn], nowOff = offAt(tn, new Date()), dt = clockToOff(S.declareTime);
+    if (dec){
+      const dm = member(dec.mid);
+      hl = 'おやすみタイム中'; sub = `${esc(dm ? dm.name : '')}が${offToClock(dec.at)}に宣言しました。画面を消して、ねる準備をしよう。ねる前に「おやすみ」を押してね`;
+    } else if (L.length && nowOff >= dt){
+      hl = 'おやすみタイムの時間です'; sub = `おやすみリーダーの${lnames}、宣言しよう（${S.declareTime}）`; img = 'bell';
+      extra = `<div class="acts">${L.map(m => `<button class="btn primary" data-act="declare" data-mid="${m.id}" type="button">${ICON.bell}${esc(m.name)}が宣言する</button>`).join('')}</div>`;
+    } else {
+      const nx = prepHero(tn, nowOff); if (nx){ hl = nx.hl; sub = nx.sub; img = nx.img; }
+      if (L.length && (h >= 17 || h < 5)) extra = `<p class="sub2">今夜のおやすみタイム ${S.declareTime}（リーダー：${lnames}）</p><div class="acts">${L.map(m => `<button class="btn small ghost" data-act="declare" data-mid="${m.id}" type="button">${ICON.bell}早めに宣言する</button>`).join('')}</div>`;
+    }
+  } else if (h >= 5 && h < 11){
+    const C = S.members.filter(m => m.job === 'check');
+    if (C.length){
+      const ln = A.upto;
+      extra = `<div class="checkline"><span class="lbl">朝のチェック（${C.map(m => esc(m.name)).join('・')}）</span>${S.members.map(m => { const e = S.entries[m.id][ln]; const ok = e && e.wk != null; return `<span class="c ${ok ? 'ok' : ''}">${esc(m.name)} ${ok ? '済' : 'まだ'}</span>`; }).join('')}</div>`;
+    }
+  }
+  const wi = homeWeek(A);
+  return banners() + `<div class="hero"><div><p class="hl">${hl}</p><p class="sub">${sub}</p>${extra}</div>${pic(img, '', '')}</div>
+    ${prepBlock()}
+    <div class="cards">${S.members.map((m,i) => memberCard(A, m, i)).join('')}</div>
+    ${weekBlock(A, wi)}
+    ${rewardsBlock(A, wi)}`;
+}
+
+function prepHero(tn, nowOff){
+  const ALL = prepAll(), log = S.prep.log[tn] || {};
+  const idx = ALL.findIndex(t => t.kind !== 'free' && log[t.id] == null);
+  if (idx < 0) return null;
+  const t = ALL[idx], prev = ALL[idx - 1];
+  if (prev && prev.kind === 'free' && nowOff >= clockToOff(prev.from) && nowOff < clockToOff(prev.dl))
+    return {hl:'自由時間です', sub:`${prev.dl}まで、すきなことをしていい時間。つぎは「${esc(t.name)}」`, img:'reading'};
+  return {hl:`つぎは「${esc(t.name)}」`, sub:`${t.dl}までにおわらせよう（${esc(whoName(t))}）`, img: PREP_IMG[t.icon] || 'stand'};
+}
+function prepBlock(){
+  const h = new Date().getHours();
+  if (!(h >= 15 || h < 5)) return '';
+  const ALL = prepAll(), T = ALL.filter(t => t.kind !== 'free'); if (!T.length) return '';
+  const n = tonight(), log = S.prep.log[n] || {}, wi = weekIndex(n), nowOff = offAt(n, new Date());
+  const next = T.find(t => log[t.id] == null);
+  const rows = ALL.map(t => {
+    if (t.kind === 'free') return `<div class="prow free">${tile(t.icon, 40)}<span class="pn">${esc(t.name)}</span><span class="pw">みんな</span><span class="ps">${t.from}〜${t.dl}　すきなことをしていい時間</span></div>`;
+    const done = log[t.id], dlo = clockToOff(t.dl);
+    let st, over = false;
+    if (done != null){ const diff = done - dlo; st = `${offToClock(done)}におわった` + (wi >= 1 ? (diff <= 0 ? '・予定どおり' : `・${diff}分おくれ`) : ''); }
+    else if (nowOff > dlo && wi >= 1){ st = `${t.dl}まで（時間をすぎています）`; over = true; }
+    else st = `${t.dl}まで`;
+    return `<button class="prow ${done != null ? 'done' : ''} ${t === next ? 'next' : ''}" data-act="prep" data-tid="${t.id}" type="button" aria-pressed="${done != null}">${tile(t.icon, 40)}<span class="pn">${esc(t.name)}${t === next ? '<em>つぎ</em>' : ''}</span><span class="pw">${esc(whoName(t))}</span><span class="ps ${over ? 'over' : ''}">${st}</span><span class="pc">${done != null ? ICON.check : ''}</span></button>`;
+  }).join('');
+  const cnt = T.filter(t => log[t.id] != null).length, ok = prepOK(n);
+  return `<section class="block" style="margin-top:0;margin-bottom:16px"><div class="panel stack" style="gap:12px">
+    <div class="prep-head"><h2>今夜のじゅんび</h2><span class="muted small" style="font-weight:700">${cnt} / ${T.length}　おわったら押してね${wi === 0 ? '（1週目は時間を記録するだけ）' : ''}</span></div>
+    <div class="prep-bar" aria-hidden="true"><i style="width:${Math.round(cnt / T.length * 100)}%"></i></div>
+    ${ok ? `<div class="getbox">${pic('allcheck')}<div><b>準備バッチリ</b><br>${esc(child().name)}のじゅんびが、全部おわりました</div></div>` : ''}
+    <div class="prep-list">${rows}</div></div></section>`;
+}
+function memberCard(A, m, i){
+  const a = A.members[m.id], E = S.entries[m.id];
+  const ln = A.upto, e = E[ln], sc = a.score[ln];
+  const pend = pendingNight(m.id);
+  const wi = A.curWeek, step = a.steps[wi];
+  const h = new Date().getHours();
+  let body = '';
+  if (pend){
+    body += `<div class="sleeping">${pic('curl')}<div><b>おやすみ中 ${offToClock(E[pend].lo)}〜</b><span>起きたら「おはよう」を押すと点数が出ます</span></div></div>`;
+  } else if (e && (e.lo != null || e.wk != null)){
+    body += `<dl class="last">
+      <dt>${mdwText(ln)}の夜</dt><dd>${sc ? pawsHTML(pawsOf(sc.total)) + ' ' + sc.total + '点' : '—'}</dd>
+      <dt>ねた時間</dt><dd>${e.lo != null ? offToClock(e.lo) : '—'}</dd>
+      <dt>起きた時間</dt><dd>${e.wk != null ? offToClock(e.wk) : '—'}</dd>
+      <dt>すいみん</dt><dd>${sc ? durText(sc.dur) : '—'}</dd></dl>`;
+  } else {
+    body += `<p class="muted small" style="margin:0">昨日の夜の記録はまだありません</p>`;
+  }
+  const tn = tonight();
+  const goal = wi === 0 ? `今週は<b>記録するだけ</b>でスタンプ`
+    : `今夜の目標　<b>${offToClock(step + (isWeekendNight(tn) ? 30 : 0))}</b>までにおやすみ${isWeekendNight(tn) ? '（明日休みなので30分おそくてOK）' : ''}`;
+  const primaryWake = !!pend || (h >= 5 && h < 12 && !(e && e.wk != null));
+  const ticketLeft = a.ticketUsed[wi] ? 0 : 1;
+  return `<article class="card mcard" style="--mc:var(--m${i})">
+    <div class="mhead"><div class="mname">${pic(avatarOf(m), 'avatar')}<span class="dot"></span><span class="nm">${esc(m.name)}</span><button class="pencil" data-act="rename" data-target="${m.id}" aria-label="${esc(m.name)}の名前を変える" type="button">${ICON.pencil}</button></div><span class="lv">Lv${a.lv.L}</span></div>
+    <button class="job" data-act="job-info" data-mid="${m.id}" type="button">${tile(JOB_ICON[m.job] || 'paw', 22)}${esc(jobName(m))}</button>
+    ${body}
+    <div class="goal">${goal}</div>
+    <div class="meta"><span>${ICON.flame}連続 ${a.streak}日</span><button data-act="ticket-info" data-mid="${m.id}" type="button">${ICON.ticket}おやすみチケット ${ticketLeft}枚</button></div>
+    <div class="btnrow">
+      <button class="btn ${primaryWake ? '' : 'primary'}" data-act="sleep" data-mid="${m.id}" type="button">${ICON.moon}おやすみ</button>
+      <button class="btn ${primaryWake ? 'primary' : ''}" data-act="wake" data-mid="${m.id}" type="button">${ICON.sun}おはよう</button>
+    </div>
+  </article>`;
+}
+
+function weekBlock(A, wi){
+  const nights = weekNights(wi), tn = tonight();
+  const head = nights.map(d => { const dd = dparse(d); return `<div class="h ${d === tn ? 'today' : ''}">${DAYS[dd.getDay()]}<br>${dd.getMonth()+1}/${dd.getDate()}</div>`; }).join('');
+  const slot = (on, future, kind) => future ? `<div class="slot future"></div>`
+    : `<div class="slot ${on ? 'on' : ''}" aria-label="${on ? 'スタンプあり' : 'スタンプなし'}">${on ? (kind === 'house' ? houseOn() : pawOn()) : ''}</div>`;
+  const rows = S.members.map((m,i) => `<div class="who" style="--mc:var(--m${i})"><span class="dot"></span>${esc(m.name)}</div>` + nights.map(d => slot(A.members[m.id].stamp[d], d > tn, 'paw')).join('')).join('');
+  const fam = `<div class="who">${ICON.house}家族</div>` + nights.map(d => slot(A.family[d], d > tn, 'house')).join('')
+    + `<div class="who">${ICON.check}じゅんび</div>` + nights.map(d => d > tn ? `<div class="slot future"></div>` : `<div class="slot ${prepOK(d) ? 'on' : ''}" aria-label="${prepOK(d) ? '準備バッチリ' : ''}">${prepOK(d) ? checkOn() : ''}</div>`).join('');
+  return `<section class="block"><div class="sechead"><h2>今週のスタンプ（${wi+1}週目）</h2><span class="muted small">${mdText(nights[0])}〜${mdText(nights[6])}の夜　${wi === 0 ? '1週目は記録できたらスタンプ' : '目標を守れたらスタンプ'}</span></div>
+    <div class="panel scroll-x"><div class="wtable"><div></div>${head}${rows}${fam}</div></div></section>`;
+}
+
+function rewardsBlock(A, wi){
+  const c = child(), a = A.members[c.id];
+  const cnt = weekStampCount(A, c.id, wi), claimed = S.rewards.weekly[wi];
+  const pips = [0,1,2,3].map(i => `<span class="pip ${i < cnt ? 'on' : ''}">${i < cnt ? pawOn(20) : ''}</span>`).join('');
+  let wk;
+  if (cnt >= 4) wk = claimed ? `<div class="big">${esc(claimed.choice)}</div><p class="muted small" style="margin:0">今週のごほうびに決まりました</p>`
+    : `<div class="pal-mini">${pic('reward')}<div class="big">ごほうびゲット</div></div><button class="btn primary" data-act="pick-weekly" data-wi="${wi}" type="button">ごほうびを選ぶ</button>`;
+  else wk = `<div class="big">あと${4-cnt}つ</div><p class="muted small" style="margin:0">7日のうち4日スタンプでごほうび</p>`;
+  let prev = '';
+  if (wi > 0 && weekStampCount(A, c.id, wi-1) >= 4 && !S.rewards.weekly[wi-1]) prev = `<button class="btn small ghost" data-act="pick-weekly" data-wi="${wi-1}" type="button">先週のごほうびを選ぶ</button>`;
+  const mk = tonight().slice(0,7), mon = Number(mk.slice(5,7));
+  const fc = monthFamilyCount(A, mk), mclaim = S.rewards.monthly[mk];
+  let mt;
+  if (fc >= 10) mt = mclaim ? `<div class="pal-mini">${pic('outing')}<div class="big">${esc(mclaim.choice)}</div></div><p class="muted small" style="margin:0">今月のおでかけ先に決まりました</p>` : `<div class="pal-mini">${pic('family')}<div class="big">イベント決定</div></div><button class="btn primary" data-act="pick-monthly" data-mk="${mk}" type="button">行き先を決める</button>`;
+  else mt = `<div class="pal-mini">${pic('family')}<div style="flex:1"><div class="big">${fc} / 10</div><div class="gauge" aria-hidden="true"><i style="width:${Math.min(100, fc*10)}%"></i></div></div></div><p class="muted small" style="margin:0">${esc(S.monthlyReward)}</p>`;
+  const lv = a.lv;
+  return `<section class="block"><div class="sechead"><h2>ごほうび</h2></div><div class="rewards">
+    <div class="card rcard"><h3>${esc(c.name)}の今週のごほうび</h3><div class="pips">${pips}</div>${wk}${prev}</div>
+    <div class="card rcard"><h3>家族の${mon}月のイベント（家族スタンプ）</h3>${mt}</div>
+    <div class="card rcard"><h3>${esc(S.pal.name)}とレベル</h3><div class="pal-mini">${pic('stand')}<div style="flex:1"><div class="big">Lv${lv.L}</div><div class="gauge"><i style="width:${Math.round(lv.into/lv.need*100)}%"></i></div><p class="muted small" style="margin:6px 0 0">${TITLES[titleIdx(lv.L)].t}・次のレベルまで${lv.need - lv.into}ポイント</p></div></div></div>
+  </div></section>`;
+}
+
+/* --- 記録 --- */
+function memberSeg(act, cur){
+  return `<div class="seg" role="group" aria-label="だれの記録">${S.members.map((m,i) => `<button type="button" data-act="${act}" data-mid="${m.id}" aria-pressed="${m.id === cur}" style="--mc:var(--m${i})"><span class="dot"></span>${esc(m.name)}</button>`).join('')}</div>`;
+}
+function mkAdd(mk, n){ const [y,m] = mk.split('-').map(Number); const t = new Date(y, m - 1 + n, 1); return `${t.getFullYear()}-${pad(t.getMonth()+1)}`; }
+const mkFirst = mk => `${mk}-01`;
+const mkLast = mk => { const [y,m] = mk.split('-').map(Number); return dstr(new Date(y, m, 0)); };
+const mkLabel = mk => { const [y,m] = mk.split('-').map(Number); return `${y}年${m}月`; };
+function nightsRange(a, b){ const out = []; for (let d = a; d <= b; d = addDays(d, 1)) out.push(d); return out; }
+const PERIODS = [{id:'week', label:'週間'}, {id:'month', label:'月間'}, {id:'year', label:'年間'}];
+function periodInfo(A){
+  const P = UI.logPeriod || 'week', tn = tonight(), startMk = S.start.slice(0,7), nowMk = tn.slice(0,7);
+  if (P === 'week'){
+    const wi = UI.logWeek == null ? Math.max(0, weekIndex(A.upto)) : Math.min(Math.max(0, UI.logWeek), A.curWeek);
+    UI.logWeek = wi;
+    const nights = weekNights(wi);
+    return {P, nights, label:`${wi+1}週目（${mdText(nights[0])}〜${mdText(nights[6])}）`, canPrev: wi > 0, canNext: wi < A.curWeek, prev: wi > 0 ? weekNights(wi - 1) : null, prevLabel:'前の週'};
+  }
+  if (P === 'month'){
+    let mk = UI.logMonth || A.upto.slice(0,7);
+    if (mk < startMk) mk = startMk; if (mk > nowMk) mk = nowMk;
+    UI.logMonth = mk;
+    return {P, mk, nights: nightsRange(mkFirst(mk), mkLast(mk)), label: mkLabel(mk), canPrev: mk > startMk, canNext: mk < nowMk, prev: mk > startMk ? nightsRange(mkFirst(mkAdd(mk,-1)), mkLast(mkAdd(mk,-1))) : null, prevLabel:'前の月'};
+  }
+  let end = UI.logYearEnd || nowMk;
+  if (end > nowMk) end = nowMk; if (end < startMk) end = startMk;
+  UI.logYearEnd = end;
+  const first = mkAdd(end, -11), months = Array.from({length:12}, (_,k) => mkAdd(first, k));
+  const pEnd = mkAdd(end, -12);
+  return {P, months, nights: nightsRange(mkFirst(first), mkLast(end)), label:`${mkLabel(first)}〜${mkLabel(end)}`, canPrev: pEnd >= startMk, canNext: end < nowMk,
+    prev: pEnd >= startMk ? nightsRange(mkFirst(mkAdd(pEnd, -11)), mkLast(pEnd)) : null, prevLabel:'前の12か月'};
+}
+function statsFor(A, mid, nights){
+  const a = A.members[mid], E = S.entries[mid];
+  const scs = nights.map(d => a.score[d]).filter(Boolean);
+  const los = nights.map(d => E[d] && E[d].lo).filter(v => v != null);
+  const done = nights.filter(d => d >= S.start && d <= A.upto);
+  return {avgDur: avg(scs.map(s => s.dur)), avgLo: avg(los), avgSc: avg(scs.map(s => s.total)), stamps: done.filter(d => a.stamp[d]).length, done: done.length, rec: scs.length};
+}
+function deltaText(cur, prev, kind, label){
+  if (cur == null || prev == null) return '';
+  const d = Math.round(cur - prev);
+  if (Math.abs(d) < 1) return `${label}と同じ`;
+  if (kind === 'dur') return `${label}より${d > 0 ? '+' : '−'}${Math.abs(d)}分`;
+  return `${label}より${Math.abs(d)}分${d < 0 ? '早い' : 'おそい'}`;
+}
+function renderLog(A){
+  const mid = UI.logMember || child().id, m = member(mid), a = A.members[mid], E = S.entries[mid];
+  const pi = periodInfo(A), st = statsFor(A, mid, pi.nights), ps = pi.prev ? statsFor(A, mid, pi.prev) : null;
+  const mi = S.members.indexOf(m);
+  const seg = `<div class="seg" role="group" aria-label="期間">${PERIODS.map(x => `<button type="button" data-act="log-period" data-p="${x.id}" aria-pressed="${pi.P === x.id}">${x.label}</button>`).join('')}</div>`;
+  const nav = `<div class="weeknav"><button class="btn ghost" data-act="log-nav" data-d="-1" ${pi.canPrev ? '' : 'disabled'} aria-label="前へ" type="button">${ICON.chevL}</button><span>${pi.label}</span><button class="btn ghost" data-act="log-nav" data-d="1" ${pi.canNext ? '' : 'disabled'} aria-label="次へ" type="button">${ICON.chevR}</button></div>`;
+  const tile2 = (l, v, dl) => `<div class="tile"><div class="l">${l}</div><div class="v">${v}</div>${dl ? `<div class="dl">${dl}</div>` : ''}</div>`;
+  const tiles = `<div class="tiles">
+    ${tile2('すいみん時間（平均）', st.avgDur != null ? durShort(Math.round(st.avgDur)) : '—', ps ? deltaText(st.avgDur, ps.avgDur, 'dur', pi.prevLabel) : '')}
+    ${tile2('ねた時間（平均）', st.avgLo != null ? offToClock(st.avgLo) : '—', ps ? deltaText(st.avgLo, ps.avgLo, 'lo', pi.prevLabel) : '')}
+    ${tile2('スタンプ', `${st.stamps}<small>/ ${st.done}夜</small>`, '')}
+    ${tile2('点数（平均）', st.avgSc != null ? `${Math.round(st.avgSc)}<small>点</small>` : '—', ps && ps.avgSc != null && st.avgSc != null ? `${pi.prevLabel}より${Math.round(st.avgSc - ps.avgSc) >= 0 ? '+' : '−'}${Math.abs(Math.round(st.avgSc - ps.avgSc))}点` : '')}
+  </div>`;
+  const step = pi.P === 'week' ? a.steps[UI.logWeek] : null;
+  const capS = pi.P === 'year' ? `月ごとの平均。線は目標（${durText(m.sleep)}）` : `線は目標（${durText(m.sleep)}）${pi.P === 'week' ? '。肉球はスタンプの夜' : ''}`;
+  const capL = pi.P === 'year' ? `月ごとの平均。上にいくほど早ね。線は最終目標（${offToClock(a.final)}）` : pi.P === 'week' ? `上にいくほど早ね。${UI.logWeek === 0 ? '1週目は目標なし（記録だけ）' : `今週の目標は${offToClock(step)}（金・土の夜は30分おそくてOK）`}` : '上にいくほど早ね。短い線はその週の目標';
+  let detail = '';
+  if (pi.P === 'week') detail = weekTable(A, mid, pi.nights);
+  else if (pi.P === 'month') detail = monthCalendar(A, mid, pi.mk);
+  else detail = yearHeatmap(A, mid, pi) + yearTable(A, mid, pi.months);
+  return banners() + `<div class="toolbar">${memberSeg('log-member', mid)}${seg}</div>
+    <div class="toolbar">${nav}</div>
+    ${tiles}
+    <div class="charts">
+      <div class="panel chartcard"><h3>すいみん時間</h3><p class="cap">${capS}</p><div class="chart" id="ch-sleep" style="--mc:var(--m${mi})"></div></div>
+      <div class="panel chartcard"><h3>ねた時間</h3><p class="cap">${capL}</p><div class="chart" id="ch-lo" style="--mc:var(--m${mi})"></div></div>
+    </div>
+    ${detail}
+    ${prepStatsBlock(pi.nights, pi.P === 'week' ? 'この週' : pi.P === 'month' ? 'この月' : 'この12か月')}`;
+}
+function weekTable(A, mid, nights){
+  const a = A.members[mid], E = S.entries[mid];
+  const rows = nights.map(d => {
+    const e = E[d], sc = a.score[d];
+    if (d > A.upto && !e) return '';
+    return `<tr><td>${mdwText(d)}</td><td class="num">${e && e.lo != null ? offToClock(e.lo) : '—'}</td><td class="num">${e && e.wk != null ? offToClock(e.wk) : '—'}</td><td class="num">${sc ? durShort(sc.dur) : '—'}</td><td class="num">${sc ? sc.total : '—'}</td><td>${a.stamp[d] ? pawOn(18) : ''}</td><td>${e && e.mood ? MOOD_LABEL[e.mood] : ''}</td></tr>`;
+  }).join('');
+  return `<section class="block"><div class="sechead"><h2>一覧</h2></div><div class="panel scroll-x"><table class="tbl"><thead><tr><th>夜</th><th>ねた</th><th>起きた</th><th>すいみん</th><th>点</th><th>スタンプ</th><th>気分</th></tr></thead><tbody>${rows || '<tr><td colspan="7" class="muted">まだ記録がありません</td></tr>'}</tbody></table></div></section>`;
+}
+function monthCalendar(A, mid, mk){
+  const [y, mo] = mk.split('-').map(Number);
+  const first = new Date(y, mo-1, 1), daysIn = new Date(y, mo, 0).getDate(), tn = tonight();
+  const a = A.members[mid];
+  let cells = DAYS.map(d => `<div class="wd">${d}</div>`).join('');
+  for (let i = 0; i < first.getDay(); i++) cells += `<div class="c blank"></div>`;
+  for (let dd = 1; dd <= daysIn; dd++){
+    const d = `${y}-${pad(mo)}-${pad(dd)}`, sc = a.score[d];
+    cells += `<div class="c ${d === tn ? 'today' : ''}"><span>${dd}</span><span class="ic">${a.stamp[d] ? pawOn(15) : ''}${A.family[d] ? houseOn(15) : ''}</span>${sc ? `<span class="cs">${sc.total}</span>` : ''}</div>`;
+  }
+  const fc = monthFamilyCount(A, mk), sc = Object.keys(a.stamp).filter(d => d.slice(0,7) === mk && a.stamp[d]).length;
+  return `<section class="block"><div class="sechead"><h2>${y}年${mo}月のカレンダー</h2></div>
+    <div class="panel"><p class="muted small" style="margin:0 0 10px;display:flex;gap:16px;flex-wrap:wrap"><span>${pawOn(15)} 自分のスタンプ ${sc}こ</span><span>${houseOn(15)} 家族スタンプ ${fc}こ</span><span>数字はその夜の点数</span></p><div class="cal">${cells}</div></div></section>`;
+}
+function yearHeatmap(A, mid, pi){
+  const a = A.members[mid], E = S.entries[mid];
+  const first = pi.nights[0], pad0 = dparse(first).getDay();
+  let cells = '';
+  for (let i = 0; i < pad0; i++) cells += `<span class="hc none"></span>`;
+  pi.nights.forEach(d => {
+    const sc = a.score[d], e = E[d];
+    if (d < S.start || d > A.upto) cells += `<span class="hc none"></span>`;
+    else if (!sc) cells += `<span class="hc miss" title="${mdText(d)} 記録なし"></span>`;
+    else cells += `<span class="hc" style="opacity:${(0.18 + 0.82 * Math.min(4, Math.floor(sc.total / 20)) / 4).toFixed(2)}" title="${mdText(d)} ${sc.total}点"></span>`;
+  });
+  const lg = [0,1,2,3,4].map(k => `<span class="hc" style="opacity:${(0.18 + 0.82 * k / 4).toFixed(2)}"></span>`).join('');
+  return `<section class="block"><div class="sechead"><h2>毎日の点数</h2><span class="muted small">1マス＝1夜。色がこいほど点数が高い</span></div>
+    <div class="panel"><div class="scroll-x"><div class="heat">${cells}</div></div>
+    <div class="row small muted" style="gap:6px;margin-top:10px"><span>0点</span>${lg}<span>100点</span><span class="hc miss" style="margin-left:12px"></span><span>記録なし</span></div></div></section>`;
+}
+function yearTable(A, mid, months){
+  const rows = months.map(mk => {
+    const ns = nightsRange(mkFirst(mk), mkLast(mk)), st = statsFor(A, mid, ns);
+    if (!st.done && !st.rec) return '';
+    return `<tr><td>${mkLabel(mk)}</td><td class="num">${st.avgLo != null ? offToClock(st.avgLo) : '—'}</td><td class="num">${st.avgDur != null ? durShort(Math.round(st.avgDur)) : '—'}</td><td class="num">${st.avgSc != null ? Math.round(st.avgSc) : '—'}</td><td class="num">${st.stamps}</td><td class="num">${st.rec}日</td></tr>`;
+  }).join('');
+  return `<section class="block"><div class="sechead"><h2>月ごとの一覧</h2></div><div class="panel scroll-x"><table class="tbl"><thead><tr><th>月</th><th>ねた（平均）</th><th>すいみん（平均）</th><th>点（平均）</th><th>スタンプ</th><th>記録</th></tr></thead><tbody>${rows || '<tr><td colspan="6" class="muted">まだ記録がありません</td></tr>'}</tbody></table></div></section>`;
+}
+function prepStatsBlock(nightsIn, title){
+  const T = prepTasks(); if (!T.length) return '';
+  const nights = nightsIn.filter(d => d >= S.start && d <= tonight());
+  let worst = null;
+  const rows = T.map(t => {
+    const vals = nights.map(d => (S.prep.log[d] || {})[t.id]).filter(v => v != null);
+    if (!vals.length) return `<tr><td>${tile(t.icon, 24)} ${esc(t.name)}</td><td>${esc(whoName(t))}</td><td class="num">${t.dl}</td><td class="num">—</td><td class="num">—</td><td class="num">0日</td></tr>`;
+    const a = avg(vals), diff = Math.round(a - clockToOff(t.dl));
+    if (diff > 0 && (!worst || diff > worst.diff)) worst = {t, diff};
+    return `<tr><td>${tile(t.icon, 24)} ${esc(t.name)}</td><td>${esc(whoName(t))}</td><td class="num">${t.dl}</td><td class="num">${offToClock(a)}</td><td class="num ${diff > 0 ? 'late' : 'ok'}">${diff > 0 ? `${diff}分おくれ` : '予定どおり'}</td><td class="num">${vals.length}日</td></tr>`;
+  }).join('');
+  const okDays = nights.filter(d => prepOK(d)).length;
+  return `<section class="block"><div class="sechead"><h2>夜のじゅんび（家族全体）</h2><span class="muted small">準備バッチリ ${okDays}日 / ${nights.length}夜</span></div>
+    ${worst ? `<div class="banner" style="margin-bottom:10px"><span>${title}いちばん遅れやすいのは<b>「${esc(worst.t.name)}」</b>（平均${worst.diff}分おくれ）</span></div>` : ''}
+    <div class="panel scroll-x"><table class="tbl prep-stats"><thead><tr><th>じゅんび</th><th>担当</th><th>締め切り</th><th>平均でおわった時刻</th><th>締め切りとの差</th><th>記録</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+}
+
+/* --- グラフ（週・月は1夜ずつ、年は1か月ずつ） --- */
+function attachTips(el){
+  const tip = el.querySelector('.tip');
+  const show = g => {
+    el.querySelectorAll('.bandhl.active').forEach(x => x.classList.remove('active'));
+    const hl = el.querySelector(`.bandhl[data-i="${g.dataset.i}"]`); if (hl) hl.classList.add('active');
+    tip.innerHTML = g.dataset.tip;
+    tip.style.left = Math.min(Math.max(g.dataset.cx, 90), el.clientWidth - 90) + 'px';
+    tip.style.top = g.dataset.ty + 'px';
+    tip.classList.add('show');
+  };
+  const hide = () => { el.querySelectorAll('.bandhl.active').forEach(x => x.classList.remove('active')); tip.classList.remove('show'); };
+  el.querySelectorAll('.hitg').forEach(g => {
+    g.addEventListener('pointerenter', () => show(g));
+    g.addEventListener('pointerleave', hide);
+    g.addEventListener('click', () => show(g));
+  });
+}
+function tipText(m, d, a){
+  const e = S.entries[m.id][d], sc = a.score[d];
+  if (!e) return `${mdwText(d)}の夜<br>記録なし`;
+  return `${mdwText(d)}の夜<br>ねた ${e.lo != null ? offToClock(e.lo) : '—'}・起きた ${e.wk != null ? offToClock(e.wk) : '—'}<br>${sc ? `${durText(sc.dur)}・${sc.total}点` : 'まだ点数なし'}${a.stamp[d] ? '・スタンプ' : ''}`;
+}
+function chartItems(A, mid, pi){
+  const m = member(mid), a = A.members[mid], E = S.entries[mid];
+  if (pi.P === 'year'){
+    return pi.months.map((mk, k) => {
+      const ns = nightsRange(mkFirst(mk), mkLast(mk)), st = statsFor(A, mid, ns), [y, mo] = mk.split('-').map(Number);
+      return {l1:`${mo}月`, l2: (k === 0 || (mo === 1 && k >= 2)) ? `${y}年` : '', we:false, dur: st.avgDur, lo: st.avgLo, stamp:false, tgt:null,
+        tip:`${mkLabel(mk)}<br>${st.rec ? `すいみん 平均${durText(Math.round(st.avgDur))}<br>ねた 平均${offToClock(st.avgLo)}・スタンプ${st.stamps}こ` : '記録なし'}`};
+    });
+  }
+  return pi.nights.map((d, k) => {
+    const sc = a.score[d], e = E[d], dd = dparse(d), wi = weekIndex(d);
+    const step = wi >= 1 ? a.steps[wi] : null;
+    const l1 = pi.P === 'week' ? DAYS[dd.getDay()] : ((dd.getDate() === 1 || dd.getDate() % 5 === 0) ? String(dd.getDate()) : '');
+    return {l1, l2: pi.P === 'week' ? `${dd.getMonth()+1}/${dd.getDate()}` : '', we: isWeekendNight(d), dur: sc ? sc.dur : null, lo: e && e.lo != null ? e.lo : null,
+      stamp: pi.P === 'week' && a.stamp[d], tgt: step != null ? step + (isWeekendNight(d) ? 30 : 0) : null, tip: tipText(m, d, a), past: d <= A.upto && d >= S.start};
+  });
+}
+function drawCharts(A){
+  const mid = UI.logMember || child().id, m = member(mid), a = A.members[mid];
+  const elS = $('#ch-sleep'), elL = $('#ch-lo');
+  if (!elS || !elL) return;
+  const pi = periodInfo(A), items = chartItems(A, mid, pi), N = items.length, two = items.some(x => x.l2);
+  const bands = (s, ml, mt, band, ih, mb) => { let hits = ''; items.forEach((it, i) => { const x0 = ml + band*i, cx = x0 + band/2; s.v += `<rect class="bandhl" data-i="${i}" x="${x0+1}" y="${mt}" width="${Math.max(1, band-2)}" height="${ih}" rx="${band > 16 ? 6 : 2}"/>`; hits += `<g class="hitg" data-i="${i}" data-cx="${cx}" data-ty="${mt}" data-tip="${esc(it.tip)}"><rect class="hit" x="${x0}" y="${mt}" width="${band}" height="${ih+mb}"/></g>`; }); return hits; };
+  const xlabels = (s, ml, band, H, mb) => items.forEach((it, i) => { const cx = ml + band*i + band/2; if (it.l1) s.v += `<text class="xl ${it.we && pi.P === 'week' ? 'we' : ''}" x="${cx}" y="${H-mb+18}" text-anchor="middle">${it.l1}</text>`; if (it.l2) s.v += `<text class="xl" x="${cx}" y="${H-mb+34}" text-anchor="middle">${it.l2}</text>`; });
+  {
+    const W = Math.max(300, Math.floor(elS.clientWidth)), H = 236, ml = 34, mr = 66, mt = 22, mb = two ? 44 : 28;
+    const iw = W - ml - mr, ih = H - mt - mb, band = iw/N, bw = Math.max(3, Math.min(24, band*0.55));
+    const maxH = 12, y = v => mt + ih - (v/maxH)*ih, s = {v:`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(m.name)}のすいみん時間">`};
+    const hits = bands(s, ml, mt, band, ih, mb);
+    [0,3,6,9,12].forEach(v => { s.v += `<line class="grid" x1="${ml}" x2="${W-mr}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${ml-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`; });
+    s.v += `<text class="tick" x="${ml-8}" y="${mt-8}" text-anchor="end">時間</text>`;
+    const tv = m.sleep/60;
+    s.v += `<line class="ref" x1="${ml}" x2="${W-mr}" y1="${y(tv)}" y2="${y(tv)}"/><text class="rl" x="${W-mr+8}" y="${y(tv)-2}">目標</text><text class="rl" x="${W-mr+8}" y="${y(tv)+13}">${durShort(m.sleep)}</text>`;
+    let lastIdx = -1; items.forEach((it, i) => { if (it.dur != null) lastIdx = i; });
+    items.forEach((it, i) => {
+      const cx = ml + band*i + band/2;
+      if (it.dur != null){
+        const top = y(Math.min(it.dur/60, maxH)), l = cx - bw/2, r = cx + bw/2, b = y(0), rr = Math.min(4, bw/2);
+        s.v += `<path d="M${l},${b} V${top+rr} Q${l},${top} ${l+rr},${top} H${r-rr} Q${r},${top} ${r},${top+rr} V${b} Z" fill="var(--mc)"/>`;
+        if (it.stamp) s.v += `<g transform="translate(${cx-8} ${top-20})">${pawOn(16)}</g>`;
+        if (i === lastIdx && N <= 12) s.v += `<text class="vl" x="${cx}" y="${top - (it.stamp ? 24 : 6)}" text-anchor="middle">${durShort(Math.round(it.dur))}</text>`;
+      } else if (pi.P === 'week' && it.past){
+        s.v += `<text class="tick" x="${cx}" y="${y(0)-6}" text-anchor="middle">—</text>`;
+      }
+    });
+    xlabels(s, ml, band, H, mb);
+    elS.innerHTML = s.v + hits + `</svg><div class="tip"></div>`;
+    attachTips(elS);
+  }
+  {
+    const W = Math.max(300, Math.floor(elL.clientWidth)), H = 236, ml = 50, mr = 66, mt = 16, mb = two ? 44 : 28;
+    const iw = W - ml - mr, ih = H - mt - mb, band = iw/N, final = a.final;
+    const vals = items.map(it => it.lo).filter(v => v != null), tg = items.map(it => it.tgt).filter(v => v != null);
+    let lo = Math.min(final, ...vals, ...tg) - 20, hi = Math.max(final, ...vals, ...tg) + 20;
+    lo = Math.floor(lo/30)*30; hi = Math.ceil(hi/30)*30; if (hi - lo < 90) hi = lo + 90;
+    const y = v => mt + ((v - lo)/(hi - lo))*ih, s = {v:`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(m.name)}のねた時間">`};
+    const hits = bands(s, ml, mt, band, ih, mb);
+    for (let v = lo; v <= hi; v += 30){ s.v += `<line class="grid" x1="${ml}" x2="${W-mr}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${ml-8}" y="${y(v)+4}" text-anchor="end">${offToClock(v)}</text>`; }
+    s.v += `<line class="ref2" x1="${ml}" x2="${W-mr}" y1="${y(final)}" y2="${y(final)}"/><text class="rl" x="${W-mr+8}" y="${y(final)-16}">最終目標</text><text class="rl" x="${W-mr+8}" y="${y(final)-2}">${offToClock(final)}</text>`;
+    if (pi.P !== 'year'){
+      let any = false;
+      items.forEach((it, i) => { if (it.tgt == null || it.tgt === final) return; any = true; const x0 = ml + band*i; s.v += `<line class="ref" x1="${x0 + Math.min(6, band*0.15)}" x2="${x0 + band - Math.min(6, band*0.15)}" y1="${y(it.tgt)}" y2="${y(it.tgt)}"/>`; });
+      if (any && pi.P === 'week') s.v += `<text class="rl" x="${W-mr+8}" y="${y(items.find(it => it.tgt != null).tgt)+13}">今週の</text><text class="rl" x="${W-mr+8}" y="${y(items.find(it => it.tgt != null).tgt)+28}">目標</text>`;
+    }
+    let path = '', pts = '', prevOk = false;
+    const r = N > 14 ? 3.5 : 5.5;
+    items.forEach((it, i) => {
+      const cx = ml + band*i + band/2;
+      if (it.lo != null){ path += (prevOk ? ' L' : ' M') + `${cx},${y(it.lo)}`; pts += `<circle cx="${cx}" cy="${y(it.lo)}" r="${r}" fill="var(--mc)" stroke="var(--surface)" stroke-width="2"/>`; prevOk = true; }
+      else prevOk = false;
+    });
+    s.v += `<path d="${path}" fill="none" stroke="var(--mc)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` + pts;
+    xlabels(s, ml, band, H, mb);
+    elL.innerHTML = s.v + hits + `</svg><div class="tip"></div>`;
+    attachTips(elL);
+  }
+}
+
+/* --- バッジ --- */
+function renderBadges(A){
+  const mid = UI.badgeMember || child().id;
+  const got = S.badges[mid] || {};
+  const isLeader = (member(mid) || {}).job === 'leader';
+  const isKid = mid === child().id;
+  const LIST = BADGES.filter(b => (!b.leaderOnly || isLeader || got[b.id]) && (!b.kidOnly || isKid || got[b.id]));
+  const n = LIST.filter(b => got[b.id]).length;
+  const cards = LIST.map(b => {
+    const on = !!got[b.id];
+    const name = on || !b.hidden ? b.name : 'ひみつのバッジ';
+    const desc = on ? `${b.hidden ? b.desc + '<br>' : b.desc + '<br>'}${mdText(got[b.id])}にゲット` : (b.hidden ? '何をするともらえるかな？' : b.desc);
+    return `<div class="badge ${on ? '' : 'locked'}">${medal(b, on, 68)}<div class="bn">${name}</div><div class="bd">${desc}</div></div>`;
+  }).join('');
+  return banners() + `<div class="toolbar">${memberSeg('badge-member', mid)}<span class="muted" style="font-weight:700">${n} / ${LIST.length}こ</span></div>
+    <div class="hero"><div><p class="hl">${n}こゲット。のこりは${LIST.length - n}こ</p><p class="sub">一度もらったバッジは消えません。「？」はひみつの条件です。</p></div>${pic('badge')}</div>
+    <div class="bgrid">${cards}</div>`;
+}
+
+/* --- キャラ --- */
+function renderPal(A){
+  const c = child(), a = A.members[c.id], lv = a.lv, ti = titleIdx(lv.L);
+  const next = TITLES[ti+1];
+  const others = S.members.filter(m => m.id !== c.id).map(m => { const x = A.members[m.id]; return `<li>${esc(m.name)}：Lv${x.lv.L}・${TITLES[titleIdx(x.lv.L)].t}（${x.points.toLocaleString()}ポイント）</li>`; }).join('');
+  const gallery = Object.keys(IMG).map(k => `<figure>${pic(k)}<figcaption>${IMG[k].cap}</figcaption></figure>`).join('');
+  return banners() + `<div class="palbox">
+    <div class="palstage">${pic('stand', '', S.pal.name)}</div>
+    <div class="stack">
+      <div><div class="muted small" style="font-weight:700">${esc(c.name)}のパートナー</div>
+        <div class="palname">${esc(S.pal.name)}<button class="pencil" data-act="rename" data-target="pal" aria-label="キャラクターの名前を変える" type="button">${ICON.pencil}</button></div>
+        <div class="row" style="gap:8px;margin-top:4px"><span class="lv">Lv${lv.L}</span><span class="title-chip">${TITLES[ti].t}</span></div></div>
+      <div><div class="gauge"><i style="width:${Math.round(lv.into/lv.need*100)}%"></i></div><p class="muted small" style="margin:6px 0 0">次のレベルまであと${lv.need - lv.into}ポイント（いま${a.points.toLocaleString()}ポイント）</p></div>
+      <div class="goal">${next ? `Lv${next.from}になると、称号が<b>「${next.t}」</b>になります` : 'いちばん上の称号です'}</div>
+      <p class="note" style="margin:0">ポイントは毎日の点数が積み上がったもの。減ることはありません。</p>
+      <div><div class="muted small" style="font-weight:700">おとなのレベル</div><ul class="small" style="margin:4px 0 0;padding-left:20px">${others}</ul></div>
+    </div></div>
+    <section class="block"><div class="sechead"><h2>イラスト集</h2><span class="muted small">このアプリに出てくる${esc(S.pal.name)}</span></div><div class="gallery">${gallery}</div></section>`;
+}
+
+/* --- おとな --- */
+function renderOtona(A){
+  if (!UI.otonaOpen){
+    const dots = [0,1,2,3].map(i => `<i class="${i < UI.pin.length ? 'on' : ''}"></i>`).join('');
+    const keys = ['1','2','3','4','5','6','7','8','9','消す','0','OK'].map(k => `<button class="btn ${k === 'OK' ? 'primary' : ''}" data-act="pin" data-k="${k}" type="button">${k}</button>`).join('');
+    return `<div class="pin"><h2>おとな用の画面</h2><p class="muted" style="margin:0">暗証番号を入れてください（はじめは0000）</p><div class="pindots">${dots}</div><div class="keypad">${keys}</div></div>`;
+  }
+  const timeOpts = cur => { let o = ''; for (let mm = 360; mm <= 660; mm += 15) o += `<option value="${mm}" ${mm === cur ? 'selected' : ''}>${durText(mm)}</option>`; return o; };
+  const mem = S.members.map((m,i) => {
+    const a = A.members[m.id], step = a.steps[A.curWeek];
+    return `<div class="mrow" style="--mc:var(--m${i})"><div class="form-grid">
+      <div class="field"><label for="f-name-${i}">名前（${m.role === 'child' ? 'こども' : 'おとな'}）</label><input id="f-name-${i}" maxlength="10" value="${esc(m.name)}"></div>
+      <div class="field"><label for="f-lo-${i}">最終目標：消灯</label><input id="f-lo-${i}" type="time" value="${m.lo}"></div>
+      <div class="field"><label for="f-sl-${i}">目標睡眠時間</label><select id="f-sl-${i}">${timeOpts(m.sleep)}</select></div>
+      <div class="field"><label for="f-wk-${i}">目標起床</label><input id="f-wk-${i}" type="time" value="${m.wake}"></div>
+      <div class="field"><label for="f-job-${i}">役</label><select id="f-job-${i}" data-jobsel="${i}">${jobOpts(m.job)}</select></div>
+    </div>
+    <div class="form-grid" id="f-custom-${i}" ${m.job === 'custom' ? '' : 'hidden'}>
+      <div class="field"><label for="f-jobname-${i}">役の名前</label><input id="f-jobname-${i}" maxlength="12" value="${esc(m.jobName || '')}"></div>
+      <div class="field"><label for="f-jobtask-${i}">やること</label><input id="f-jobtask-${i}" maxlength="40" value="${esc(m.jobTask || '')}"></div>
+    </div><p class="note" style="margin:0">今週の目標（自動）：${step == null ? '1週目は記録のみ' : offToClock(step)}　累計${a.points.toLocaleString()}ポイント・Lv${a.lv.L}</p></div>`;
+  }).join('');
+  const ep = UI.editPick || {mid: child().id, d: lastNight()};
+  const ee = (S.entries[ep.mid] || {})[ep.d] || {};
+  const recent = [];
+  for (let k = 0; k < 7; k++) recent.push(addDays(tonight(), -k));
+  const recRows = recent.map(d => `<tr><td>${mdwText(d)}</td>${S.members.map(m => { const e = S.entries[m.id][d]; const t = e ? `${e.lo != null ? offToClock(e.lo) : '—'}→${e.wk != null ? offToClock(e.wk) : '—'}` : '—'; return `<td><button class="btn small ghost" data-act="edit-pick" data-mid="${m.id}" data-d="${d}" type="button">${t}</button></td>`; }).join('')}</tr>`).join('');
+  return `<div class="stack">
+    <div class="row" style="justify-content:space-between"><h2>おとな用の画面</h2><button class="btn small ghost" data-act="otona-lock" type="button">閉じる</button></div>
+
+    <section class="panel stack"><h2>家族で決める設定</h2><p class="note" style="margin:0">名前・目標・役・おやすみタイム・ごほうびを、家族で画面を見ながら順番に決めます。${S.demo ? '最後まで進むと、デモデータが消えて今日から1週目がはじまります。' : '記録はそのまま残ります。'}</p><div class="row"><button class="btn primary small" data-act="tut-start" type="button">${S.demo ? '家族で決めて本番をはじめる' : '家族の設定をやりなおす'}</button></div></section>
+    <section class="panel stack"><h2>メンバーと目標</h2><p class="note" style="margin:0">点数は最終目標に対する到達度。スタンプは「今週の目標」で判定し、7日中4日達成すると翌週は15分早まります（最終目標まで）。名前はホーム画面の鉛筆マークからも変えられます。</p>${mem}<div class="form-grid"><div class="field"><label for="f-decl">おやすみタイム（リーダーが宣言する時間）</label><input id="f-decl" type="time" value="${S.declareTime}"></div></div><div class="row"><button class="btn primary small" data-act="save-members" type="button">保存</button></div></section>
+    <section class="panel stack"><h2>記録の修正</h2>
+      <div class="scroll-x"><table class="tbl"><thead><tr><th>夜</th>${S.members.map(m => `<th>${esc(m.name)}</th>`).join('')}</tr></thead><tbody>${recRows}</tbody></table></div>
+      <div class="form-grid">
+        <div class="field"><label for="f-e-mid">だれ</label><select id="f-e-mid">${S.members.map(m => `<option value="${m.id}" ${m.id === ep.mid ? 'selected' : ''}>${esc(m.name)}</option>`).join('')}</select></div>
+        <div class="field"><label for="f-e-d">夜の日付</label><input id="f-e-d" type="date" value="${ep.d}"></div>
+        <div class="field"><label for="f-e-lo">消灯</label><input id="f-e-lo" type="time" value="${ee.lo != null ? offToClock(ee.lo) : ''}"></div>
+        <div class="field"><label for="f-e-wk">起床</label><input id="f-e-wk" type="time" value="${ee.wk != null ? offToClock(ee.wk) : ''}"></div>
+        <div class="field"><label for="f-e-mood">気分</label><select id="f-e-mood"><option value="">—</option>${[1,2,3].map(k => `<option value="${k}" ${ee.mood === k ? 'selected' : ''}>${MOOD_LABEL[k]}</option>`).join('')}</select></div>
+      </div>
+      <div class="row"><button class="btn primary small" data-act="save-entry" type="button">この夜を保存</button><button class="btn danger small" data-act="delete-entry" type="button">この夜を削除</button></div>
+      <p class="note" style="margin:0">表のボタンを押すと、その夜を下のフォームに読み込みます。0時以降に寝た場合も「夜の日付」は前日のままです。</p>
+    </section>
+    <section class="panel stack"><h2>夜のじゅんび</h2>
+      <p class="note" style="margin:0">${prepTasks().map(t => `${esc(t.name)}（${t.dl}・${esc(whoName(t))}）`).join('、') || 'まだありません'}</p>
+      <div class="row"><button class="btn small" data-act="tut-prep-edit" type="button">夜のじゅんびを変える</button></div></section>
+    <section class="panel stack"><h2>ごほうび</h2>
+      <div class="field"><label for="f-menu">週のごほうび候補（1行に1つ）</label><textarea id="f-menu">${esc(S.menu.join('\n'))}</textarea></div>
+      <div class="field"><label for="f-monthly">月のイベント（家族スタンプ10個）</label><input id="f-monthly" value="${esc(S.monthlyReward)}"></div>
+      <div class="row"><button class="btn primary small" data-act="save-menu" type="button">保存</button></div>
+      <p class="note" style="margin:0">これまでの週のごほうび：${Object.keys(S.rewards.weekly).sort((a,b)=>a-b).map(k => `${Number(k)+1}週目「${esc(S.rewards.weekly[k].choice)}」`).join('、') || 'まだありません'}</p>
+    </section>
+    <section class="panel stack"><h2>開始日と暗証番号</h2>
+      <div class="form-grid"><div class="field"><label for="f-start">1週目の初日</label><input id="f-start" type="date" value="${S.start}"></div><div class="field"><label for="f-pin">暗証番号（数字4けた）</label><input id="f-pin" inputmode="numeric" maxlength="4" value="${esc(S.pin)}"></div></div>
+      <div class="row"><button class="btn primary small" data-act="save-start" type="button">保存</button></div>
+      <p class="note" style="margin:0">開始日を変えると週の区切りと「今週の目標」が計算しなおされます。</p>
+    </section>
+    <section class="panel stack"><h2>データ</h2>
+      <p class="note" style="margin:0">データはこの端末のブラウザの中だけに保存されます。週に1回、書き出してバックアップしてください。</p>
+      <p class="note" style="margin:0">前回のバックアップ：${S.lastBackup ? mdwText(S.lastBackup) : 'まだありません'}</p>
+      <div class="row"><button class="btn primary small" data-act="backup-file" type="button">ファイルに保存する</button><button class="btn small" data-act="export" type="button">テキストで書き出す</button><button class="btn small" data-act="copy-export" type="button" ${UI.exportText ? '' : 'disabled'}>コピー</button></div>
+      ${UI.exportText ? `<textarea id="f-export" readonly aria-label="書き出したデータ">${esc(UI.exportText)}</textarea>` : ''}
+      <div class="field"><label for="f-import">読み込み（書き出したテキストを貼り付け、またはファイルを選択）</label><textarea id="f-import" placeholder="{ ... }"></textarea><input id="f-file" type="file" accept=".json,.txt,application/json,text/plain"></div>
+      <div class="row"><button class="btn small" data-act="import" type="button">読み込む</button></div>
+      <div class="row"><button class="btn small ghost" data-act="demo" type="button">デモデータを入れなおす</button><button class="btn danger small" data-act="reset" type="button">記録をすべて消して1週目からはじめる</button></div>
+    </section>
+  </div>`;
+}
+
+/* 吹き出し（文字だけ。音声は使わない） */
+const bubble = kind => `<div class="bubble">${kind === 'sleep' ? 'おやすみにゃ' : 'おはようにゃ'}</div>`;
+
+/* ---------- 記録の流れ ---------- */
+function doSleep(mid){
+  const m = member(mid), n = new Date(), d = nightOf(n), off = offAt(d, n), E = S.entries[mid], e = E[d];
+  const go = () => { E[d] = Object.assign({}, E[d] || {}, {lo: off, src: 'tap'}); delete E[d].wk; save(); closeDialog(); showNight(m, d, off); render(); };
+  if (e && e.lo != null) confirmBox(`もう「おやすみ」を押しています（${offToClock(e.lo)}）。いまの時間（${offToClock(off)}）で記録しなおしますか？`, '記録しなおす', go);
+  else go();
+}
+let nightTimer;
+function showNight(m, d, off){
+  const A = analyze(), a = A.members[m.id], wi = weekIndex(d);
+  let msg;
+  if (wi <= 0) msg = '明日の朝、記録スタンプがもらえます';
+  else if (a.steps[wi] != null && off <= a.steps[wi] + (isWeekendNight(d) ? 30 : 0)) msg = '目標に間に合いました。スタンプは明日の朝に';
+  else msg = 'ゆっくり休んでね';
+  let tw = '';
+  for (let i = 0; i < 26; i++) tw += `<span class="tw" style="left:${(i*37)%100}%;top:${(i*53)%90}%;animation-delay:${(i%7)*0.45}s"></span>`;
+  const el = $('#nightsky');
+  el.innerHTML = `${tw}${bubble('sleep')}${pic('charge')}<p class="nt">おやすみ、${esc(m.name)}</p><p>${offToClock(off)}に記録しました</p><p>${msg}</p><p class="hint">iPadを充電台に置いてから布団へ<br>（タップで閉じる）</p>`;
+  el.classList.add('open');
+  clearTimeout(nightTimer); nightTimer = setTimeout(() => el.classList.remove('open'), 9000);
+}
+function doWake(mid){
+  const m = member(mid), n = new Date(), E = S.entries[mid];
+  const pend = pendingNight(mid);
+  if (pend){ UI.flow = {mid, d: pend, lo: E[pend].lo, wk: offAt(pend, n), src:'tap'}; return moodDialog(); }
+  const d = lastNight(), e = E[d];
+  const nowOff = offAt(d, n);
+  if (e && e.wk != null){
+    confirmBox(`${mdwText(d)}の夜は、もう「おはよう」を押しています。いまの時間で記録しなおしますか？`, '記録しなおす', () => {
+      if (e.lo != null && nowOff > e.lo && nowOff < 1440){ UI.flow = {mid, d, lo: e.lo, wk: nowOff, src:'tap'}; moodDialog(); }
+      else manualDialog(m, d, e);
+    });
+    return;
+  }
+  manualDialog(m, d, e);
+}
+function manualDialog(m, d, e){
+  const n = new Date(), h = n.getHours();
+  const wkDefault = (h >= 4 && h < 12) ? `${pad(h)}:${pad(n.getMinutes())}` : m.wake;
+  UI.flow = {mid: m.id, d, src:'hand'};
+  openDialog(`<h3>${esc(m.name)}、${mdwText(d)}の夜の時間を入れてね</h3>
+    <p class="muted small" style="margin:0">「おやすみ」を押し忘れたときは、ここで入れます</p>
+    <div class="form-grid"><div class="field"><label for="man-lo">ねた時間</label><input id="man-lo" type="time" value="${e && e.lo != null ? offToClock(e.lo) : m.lo}"></div>
+    <div class="field"><label for="man-wk">起きた時間</label><input id="man-wk" type="time" value="${wkDefault}"></div></div>
+    <p class="small" id="man-err" style="margin:0;color:var(--warn)" role="alert"></p>
+    <div class="btnrow"><button class="btn" data-act="close" type="button">やめる</button><button class="btn primary" data-act="man-next" type="button">次へ</button></div>`);
+}
+function moodDialog(){
+  const m = member(UI.flow.mid);
+  openDialog(`<h3>おはよう、${esc(m.name)}。けさの気分は？</h3>
+    <div class="moods">${[1,2,3].map(k => `<button class="btn" data-act="mood" data-k="${k}" type="button">${pic(['','face_good','face_ok','face_sleepy'][k])}${MOOD_LABEL[k]}</button>`).join('')}</div>
+    <button class="btn ghost small" data-act="close" type="button">やめる</button>`);
+}
+function finishWake(k){
+  const f = UI.flow; if (!f) return;
+  const m = member(f.mid), c = child();
+  const before = analyze(), bA = before.members[f.mid];
+  const wiN = weekIndex(f.d), mk = f.d.slice(0,7);
+  const prevWeek = weekStampCount(before, c.id, wiN), prevFam = monthFamilyCount(before, mk), prevLv = bA.lv;
+  S.entries[f.mid][f.d] = Object.assign({}, S.entries[f.mid][f.d] || {}, {lo: f.lo, wk: f.wk, mood: k, src: f.src});
+  const A = analyze();
+  const fresh = unlockBadges(A, today());
+  save();
+  UI.flow = null;
+  resultDialog(m, f.d, A, prevLv, (fresh[f.mid] || []), {prevWeek, prevFam, wiN, mk, isChild: m.id === c.id});
+  render();
+}
+function resultDialog(m, d, A, prevLv, newBadges, ctx){
+  const a = A.members[m.id], sc = a.score[d], e = S.entries[m.id][d];
+  if (!sc){ closeDialog(); return; }
+  const n = pawsOf(sc.total), wi = weekIndex(d), stamped = a.stamp[d];
+  const t = stepTonight(a);
+  let scene = 'stand', note = '';
+  if (stamped) scene = 'stamp';
+  else if (sc.total >= 70) scene = 'wake';
+  else if (sc.total >= 50) scene = 'stretch';
+  else if (ctx.isChild){ scene = 'yawn'; note = `ねぶそくだと、授業中にこうなっちゃうかも。${t != null ? `今夜は${offToClock(t)}までにおやすみしよう` : '今夜は早めにね'}`; }
+  else { scene = 'laptop'; note = `夜ふかしはほどほどに。${t != null ? `今夜は${offToClock(t)}までに` : ''}`; }
+  let h = `${bubble('wake')}${pic(scene, 'scene', S.pal.name)}${note ? `<p class="scene-note">${note}</p>` : ''}
+    <h3 class="center">おはよう、${esc(m.name)}</h3>
+    <div class="rscore"><div class="rpaws">${[0,1,2].map(i => `<span style="animation-delay:${.15 + i*.22}s">${i < n ? pawOn(40) : pawOff(40)}</span>`).join('')}</div>
+    <div class="score-big">${sc.total}<small>点</small></div></div>
+    <div class="breakdown"><span>ねた時間 <b>${sc.sLo}</b>/50</span><span>すいみん <b>${sc.sSl}</b>/40</span><span>起きた時間 <b>${sc.sWk}</b>/10</span></div>
+    <p class="center small muted" style="margin:0">${offToClock(e.lo)}にねて、${offToClock(e.wk)}に起きた（${durText(sc.dur)}）</p>`;
+  if (stamped){
+    h += `<div class="getbox">${pawOn(40)}<div><b>${wi <= 0 ? '記録スタンプ' : '自分のスタンプ'}ゲット</b></div></div>`;
+    if (A.family[d]) h += `<div class="getbox">${pic('family')}<div><b>家族スタンプもゲット</b><br>3人とも目標をクリアしました</div></div>`;
+  } else if (wi >= 1 && a.ticketUsed[wi] === d) {
+    h += `<div class="getbox">${pic('ticket')}<div><b>おやすみチケットを使いました</b><br>スタンプはなかったけど、連続記録はつづきます（今週のチケットはこれでおしまい）</div></div>`;
+  } else if (!note) {
+    h += `<div class="getbox plain"><div>記録できました。${t != null ? `今夜は<b>${offToClock(t)}</b>までにおやすみしよう` : '今夜も記録しよう'}</div></div>`;
+  }
+  const lvUp = a.lv.L > prevLv.L;
+  const from = lvUp ? 0 : Math.round(prevLv.into/prevLv.need*100), to = Math.round(a.lv.into/a.lv.need*100);
+  h += `<div class="stack" style="gap:6px"><div style="font-weight:700">+${sc.total}ポイント</div><div class="gauge"><i id="res-gauge" style="width:${from}%" data-to="${to}"></i></div><div class="small muted">Lv${a.lv.L}・次のレベルまであと${a.lv.need - a.lv.into}ポイント</div></div>`;
+  if (lvUp){
+    const newTitle = titleIdx(a.lv.L) > titleIdx(prevLv.L);
+    h += `<div class="getbox">${pic('levelup')}<div><b>レベルアップ　Lv${a.lv.L}</b>${newTitle ? `<br>新しい称号「${TITLES[titleIdx(a.lv.L)].t}」` : ''}</div></div>`;
+  }
+  if (newBadges.length) h += `<div class="getbox">${pic('badge')}<div style="flex:1"><b>新しいバッジ</b><div class="badgelist">${newBadges.map(b => `<div>${medal(b, true, 34)}<span><b>${b.name}</b>　${b.desc}</span></div>`).join('')}</div></div></div>`;
+  if (ctx.isChild){
+    const cnt = weekStampCount(A, m.id, ctx.wiN);
+    if (ctx.prevWeek < 4 && cnt >= 4 && !S.rewards.weekly[ctx.wiN]) h += `<div class="getbox">${pic('reward')}<div style="flex:1"><b>今週のごほうびがもらえます</b></div><button class="btn primary small" data-act="pick-weekly" data-wi="${ctx.wiN}" type="button">選ぶ</button></div>`;
+  }
+  const fc = monthFamilyCount(A, ctx.mk);
+  if (ctx.prevFam < 10 && fc >= 10 && !S.rewards.monthly[ctx.mk]) h += `<div class="getbox">${pic('family')}<div style="flex:1"><b>家族スタンプが10こ。今月のイベント決定</b></div><button class="btn primary small" data-act="pick-monthly" data-mk="${ctx.mk}" type="button">行き先を決める</button></div>`;
+  h += `<button class="btn" data-act="close" type="button">閉じる</button>`;
+  openDialog(h);
+  const g = $('#res-gauge');
+  if (g) setTimeout(() => { g.style.width = g.dataset.to + '%'; }, 250);
+}
+function pickWeekly(wi){
+  openDialog(`${pic('reward', 'scene', S.pal.name)}<h3 class="center">${wi+1}週目のごほうびを選ぼう</h3><div class="menu-list">${S.menu.map((x,i) => `<button class="btn" data-act="choose-weekly" data-wi="${wi}" data-idx="${i}" type="button">${esc(x)}</button>`).join('')}</div><button class="btn ghost small" data-act="close" type="button">あとで</button>`);
+}
+function pickMonthly(mk){
+  openDialog(`${pic('family', 'scene', S.pal.name)}<h3 class="center">${Number(mk.slice(5,7))}月の家族イベント</h3><p style="margin:0">${esc(S.monthlyReward)}</p><div class="field"><label for="mon-where">どこに行きたい？</label><input id="mon-where" maxlength="30" placeholder="例：水族館"></div><div class="btnrow"><button class="btn" data-act="close" type="button">あとで</button><button class="btn primary" data-act="choose-monthly" data-mk="${mk}" type="button">決める</button></div>`);
+}
+
+/* ---------- おやすみタイムの宣言 ---------- */
+function doDeclare(mid){
+  const m = member(mid), n = new Date(), d = tonight(), off = offAt(d, n);
+  S.declares[d] = {mid, at: off};
+  const fresh = unlockBadges(analyze(), today());
+  save();
+  const chargers = S.members.filter(x => x.job === 'charge').map(x => esc(x.name)).join('・');
+  let h = `${pic('bell', 'scene', S.pal.name)}<h3 class="center">おやすみタイムです</h3>
+    <p class="center" style="margin:0">おやすみリーダーの${esc(m.name)}が、${offToClock(off)}に宣言しました。</p>
+    <ul class="promise">
+      <li>${ICON.check}テレビ・スマホ・ゲームはおしまい</li>
+      <li>${ICON.check}歯みがきをして、ねる準備をはじめる</li>
+      <li>${ICON.check}iPadとスマホは充電台へ${chargers ? `（充電台係：${chargers}）` : ''}</li>
+    </ul>`;
+  { const T = prepTasks(), L = S.prep.log[d] || {}, rest = T.filter(t => L[t.id] == null);
+    if (T.length) h += `<div class="getbox plain"><div style="flex:1">${rest.length ? `<b>のこりのじゅんび</b><div class="row" style="gap:8px;margin-top:6px">${rest.map(t => `<span class="row" style="gap:6px">${tile(t.icon, 28)}${esc(t.name)}</span>`).join('')}</div>` : 'じゅんびは全部おわっています'}</div></div>`; }
+  const nb = fresh[mid] || [];
+  if (nb.length) h += `<div class="getbox">${pic('badge')}<div style="flex:1"><b>新しいバッジ</b><div class="badgelist">${nb.map(b => `<div>${medal(b, true, 34)}<span><b>${b.name}</b>　${b.desc}</span></div>`).join('')}</div></div></div>`;
+  h += `<button class="btn primary" data-act="close" type="button">わかった</button>`;
+  openDialog(h);
+  render();
+}
+
+/* ---------- はじめに：家族で決めるチュートリアル ---------- */
+const TUT_STEPS = ['welcome','names','goals','jobs','time','prep','reward','promise'];
+function openTut(only){
+  UI.tut = {step: only ? TUT_STEPS.indexOf(only) : 0, only: only || null, d:{
+    prep: S.prep.tasks.map(t => Object.assign({}, t)),
+    members: S.members.map(m => ({id:m.id, role:m.role, name:m.name, wake:m.wake, sleep:m.sleep, job:m.job, jobName:m.jobName || '', jobTask:m.jobTask || '', avatar:avatarOf(m)})),
+    pal: S.pal.name, declareTime: S.declareTime, menu: S.menu.slice(), monthly: S.monthlyReward
+  }};
+  closeDialog();
+  document.body.style.overflow = 'hidden';
+  $('#tut').classList.add('open');
+  renderTut();
+}
+function closeTut(){ $('#tut').classList.remove('open'); $('#tut').innerHTML = ''; document.body.style.overflow = ''; UI.tut = null; }
+const tutBed = dm => minusClock(dm.wake, dm.sleep);
+function tutInput(t){
+  if (!UI.tut || !t.dataset || !t.dataset.tf) return;
+  const d = UI.tut.d, i = t.dataset.i != null ? Number(t.dataset.i) : null, f = t.dataset.tf, v = t.value;
+  if (f.startsWith('p-')){
+    const pi = Number(t.dataset.pi), tk = d.prep[pi]; if (!tk) return;
+    if (f === 'p-name'){ tk.name = v; return; }
+    if (t.tagName === 'INPUT' && t.type === 'checkbox' && t.dataset.tf === 'p-on'){ if (t.checked === tk.on) return; tk.on = t.checked; }
+    else if (f === 'p-dur'){ if (Number(v) === tk.dur) return; tk.dur = Number(v); }
+    else if (f === 'p-who'){ tk.who = v; return; }
+    else return;
+    renderTut(); return;
+  }
+  if (f === 'pal') d.pal = v;
+  else if (f === 'decl'){ d.declareTime = v; d.declTouched = true; }
+  else if (f === 'monthly') d.monthly = v;
+  else if (i != null){
+    const dm = d.members[i];
+    if (f === 'sleep') dm.sleep = Number(v); else dm[f] = v;
+    if (f === 'wake' || f === 'sleep'){
+      const c = $('#tc-' + i); if (c && dm.wake) c.textContent = tutBed(dm);
+      const w = $('#tw-' + i); if (w) w.textContent = (dm.role === 'child' && dm.sleep < 540) ? '小学生の目安（9〜12時間）より短くなっています' : '';
+    }
+    if (f === 'job'){
+      const tk = $('#tj-' + i); if (tk) tk.textContent = v === 'custom' ? 'やることを下に書いてください' : JOBS[v].task;
+      const cc = $('#tjc-' + i); if (cc) cc.hidden = v !== 'custom';
+      const ic = $('#tji-' + i); if (ic) ic.innerHTML = pic(JOB_IMG[v] || 'stand');
+    }
+  }
+}
+function tutNext(){
+  const st = TUT_STEPS[UI.tut.step], d = UI.tut.d;
+  if (st === 'names'){
+    if (d.members.some(m => !m.name.trim()) || !d.pal.trim()){ toast('名前をすべて入れてください'); return; }
+  }
+  if (st === 'goals' && d.members.some(m => !m.wake)){ toast('起きる時間をすべて入れてください'); return; }
+  if (st === 'jobs' && d.members.some(m => m.job === 'custom' && !m.jobName.trim())){ toast('「自分で決める」を選んだ人は、役の名前を入れてください'); return; }
+  if (st === 'time' && !d.declareTime){ toast('おやすみタイムを入れてください'); return; }
+  if (st === 'prep' && d.prep.some(t => t.on && !t.name.trim())){ toast('じゅんびの名前を入れてください'); return; }
+  if (UI.tut.only){ tutCommit(); return; }
+  if (UI.tut.step < TUT_STEPS.length - 1){
+    UI.tut.step++;
+    if (TUT_STEPS[UI.tut.step] === 'time' && !d.declTouched && !S.onboarded) d.declareTime = minusClock(tutChildBed(), 30);
+    renderTut(); return;
+  }
+  tutCommit();
+}
+function clearRecords(){
+  S.members.forEach(m => { S.entries[m.id] = {}; S.badges[m.id] = {}; });
+  S.rewards = {weekly:{}, monthly:{}}; S.declares = {}; S.start = today(); S.demo = false;
+  UI.logWeek = null; UI.calMonth = null; UI.editPick = null;
+}
+function tutChildBed(){ const d = UI.tut.d, c = d.members.find(x => x.role === 'child') || d.members[0]; return tutBed(c); }
+const tutKid = () => (UI.tut.d.members.find(x => x.role === 'child') || UI.tut.d.members[0]).id;
+function tutCommit(){
+  const d = UI.tut.d, wasDemo = S.demo;
+  const cleanPrep = d.prep.map(t => ({id:t.id, name:t.name.trim(), dur:t.dur, who:t.who, icon:t.icon, kind:t.kind, on:!!t.on})).filter(t => t.name);
+  if (UI.tut.only){
+    if (UI.tut.only === 'prep') S.prep.tasks = cleanPrep;
+    save(); closeTut(); render(); toast('保存しました'); return;
+  }
+  S.prep.tasks = cleanPrep;
+  d.members.forEach(dm => {
+    const m = member(dm.id);
+    m.name = dm.name.trim(); m.wake = dm.wake; m.sleep = dm.sleep; m.lo = tutBed(dm);
+    m.job = dm.job; m.jobName = dm.jobName.trim(); m.jobTask = dm.jobTask.trim(); m.avatar = dm.avatar;
+  });
+  S.pal.name = d.pal.trim(); S.declareTime = d.declareTime;
+  if (d.menu.length) S.menu = d.menu.slice();
+  if ((d.monthly || '').trim()) S.monthlyReward = d.monthly.trim();
+  const firstStart = wasDemo || !S.onboarded;
+  if (wasDemo) clearRecords();
+  else if (!S.onboarded && !hasRecords()) S.start = today();
+  S.onboarded = true;
+  save(); closeTut(); UI.view = 'home'; render(); window.scrollTo(0, 0);
+  const L = leaders();
+  openDialog(`${pic('family', 'scene', S.pal.name)}<h3 class="center">${firstStart ? 'スタート' : '設定を保存しました'}</h3>
+    <p class="center" style="margin:0">${firstStart ? '今夜から記録をはじめます。1週目は、記録するだけでスタンプがもらえます。' : '新しい設定で続けます。'}</p>
+    <div class="getbox plain"><div>今夜のおやすみタイム <b>${S.declareTime}</b>${L.length ? `<br>おやすみリーダー：${L.map(m => esc(m.name)).join('・')}` : ''}</div></div>
+    <button class="btn primary" data-act="close" type="button">はじめる</button>`);
+}
+function renderTut(){
+  const t = UI.tut, d = t.d, st = TUT_STEPS[t.step];
+  const top = `<div class="tut-top"><div class="steps">${TUT_STEPS.map((_,i) => `<i class="${i <= t.step ? 'on' : ''}"></i>`).join('')}</div><span class="cnt">${t.step+1} / ${TUT_STEPS.length}</span><button class="btn small ghost" data-act="tut-close" type="button">あとで</button></div>`;
+  const head = (h, lead, img) => `<div class="tut-head"><div><h2>${h}</h2><p class="lead">${lead}</p></div>${pic(img)}</div>`;
+  const mh = (dm, i) => `<h3><span class="dot" style="--mc:var(--m${i})"></span>${esc(dm.name || (dm.role === 'child' ? 'こども' : 'おとな'))}</h3>`;
+  let body = '';
+  if (st === 'welcome'){
+    body = head('ようこそ、ねむりノートへ', '家族3人で、ねた時間と起きた時間を記録して、早ねを楽しく続けるノートです。', 'stand') +
+      `<div class="tut-card"><h3>はじめに、家族で相談して6つのことを決めます</h3>
+        <ol class="olist"><li>みんなの名前</li><li>起きる時間と、すいみん時間</li><li>それぞれの役</li><li>おやすみタイム</li><li>夜のじゅんび（ごはん・お風呂など）</li><li>ごほうび</li></ol>
+        <p class="note" style="margin:0">3人そろって、この画面を見ながら進めてください。</p>
+        ${!S.demo && !S.onboarded && !hasRecords() ? '<div class="row"><button class="btn small ghost" data-act="tut-demo" type="button">先にデモを見てみる</button></div>' : ''}
+        ${S.demo ? '<p class="note" style="margin:0">いまのデモデータは、最後に「この内容ではじめる」を押したときに消えます。</p>' : ''}</div>`;
+  } else if (st === 'names'){
+    body = head('みんなの名前', 'アプリに表示する名前です。あとから鉛筆マークでも変えられます。', 'family') +
+      `<div class="tut-card">${d.members.map((dm,i) => `<div class="row" style="gap:12px;flex-wrap:nowrap"><button class="avbtn" data-act="tut-avatar" data-i="${i}" aria-label="アイコンを変える" type="button">${pic(dm.avatar)}</button><div class="field" style="flex:1"><label for="tn-${i}"><span class="dot" style="--mc:var(--m${i});display:inline-block;margin-right:6px"></span>${dm.role === 'child' ? 'こども' : 'おとな'}</label><input id="tn-${i}" data-tf="name" data-i="${i}" maxlength="10" value="${esc(dm.name)}" autocomplete="off"></div></div>`).join('')}<p class="note" style="margin:0">左の絵を押すと、アイコンが変わります。</p></div>
+      <div class="tut-card"><div class="field"><label for="tn-pal">キャラクターの名前</label><input id="tn-pal" data-tf="pal" maxlength="10" value="${esc(d.pal)}" autocomplete="off"></div></div>`;
+  } else if (st === 'goals'){
+    body = head('起きる時間と、すいみん時間', '起きる時間とすいみん時間から、ねる時間の目標を決めます。', 'futon') +
+      `<p class="note" style="margin:0">目安：小学生は9〜12時間、おとなは6時間以上（厚生労働省「健康づくりのための睡眠ガイド2023」）</p>` +
+      d.members.map((dm,i) => `<div class="tut-card mc" style="--mc:var(--m${i})">${mh(dm,i)}
+        <div class="form-grid"><div class="field"><label for="tg-w-${i}">起きる時間</label><input id="tg-w-${i}" type="time" data-tf="wake" data-i="${i}" value="${dm.wake}"></div>
+        <div class="field"><label for="tg-s-${i}">すいみん時間</label><select id="tg-s-${i}" data-tf="sleep" data-i="${i}">${sleepOpts(dm.sleep)}</select></div></div>
+        <div class="calc">ねる時間の目標　<b id="tc-${i}">${tutBed(dm)}</b> までにおやすみ</div>
+        <p class="warnline" id="tw-${i}">${dm.role === 'child' && dm.sleep < 540 ? '小学生の目安（9〜12時間）より短くなっています' : ''}</p></div>`).join('') +
+      `<div class="tut-card"><p class="note" style="margin:0">1週目は記録だけ。2週目から、いまのねる時間より15分ずつ早くして、この目標に近づけていきます。</p></div>`;
+  } else if (st === 'jobs'){
+    body = head('それぞれの役', 'ひとり1つずつ、役を選びます。おすすめは、こどもが「おやすみリーダー」です。', 'cheer') +
+      d.members.map((dm,i) => `<div class="tut-card mc" style="--mc:var(--m${i})">${mh(dm,i)}
+        <div class="row" style="gap:12px;flex-wrap:nowrap"><span class="roleimg" id="tji-${i}">${pic(JOB_IMG[dm.job] || 'stand')}</span><div class="field" style="flex:1"><label for="tj-s-${i}">役</label><select id="tj-s-${i}" data-tf="job" data-i="${i}">${jobOpts(dm.job)}</select></div></div>
+        <p class="note" style="margin:0" id="tj-${i}">${dm.job === 'custom' ? 'やることを下に書いてください' : JOBS[dm.job].task}</p>
+        <div class="form-grid" id="tjc-${i}" ${dm.job === 'custom' ? '' : 'hidden'}>
+          <div class="field"><label for="tj-n-${i}">役の名前</label><input id="tj-n-${i}" data-tf="jobName" data-i="${i}" maxlength="12" value="${esc(dm.jobName)}"></div>
+          <div class="field"><label for="tj-t-${i}">やること</label><input id="tj-t-${i}" data-tf="jobTask" data-i="${i}" maxlength="40" value="${esc(dm.jobTask)}"></div>
+        </div></div>`).join('') +
+      `<div class="tut-card"><p class="note" style="margin:0">役は家族の中での担当です。役ができなかった日に、注意したり叱ったりはしません。</p></div>`;
+  } else if (st === 'time'){
+    const c = d.members.find(x => x.role === 'child') || d.members[0];
+    const rec = minusClock(tutBed(c), 30);
+    const L = d.members.filter(x => x.job === 'leader');
+    body = head('おやすみタイム', 'この時間になったら、おやすみリーダーがアプリで「おやすみタイム」を宣言します。', 'bell') +
+      `<div class="tut-card"><div class="field"><label for="tt-decl">おやすみタイム</label><input id="tt-decl" type="time" data-tf="decl" value="${d.declareTime}"></div>
+        <div class="row"><button class="btn small ghost" data-act="tut-rec-decl" type="button">おすすめ（${esc(c.name)}の目標 ${tutBed(c)} の30分前：${rec}）にする</button></div>
+        ${L.length ? `<p class="note" style="margin:0">おやすみリーダー：${L.map(x => esc(x.name)).join('・')}</p>` : '<p class="warnline">おやすみリーダーがいません。前の画面で選んでください。</p>'}</div>
+      <div class="tut-card"><h3>宣言されたら、家族みんなで</h3>
+        <ul class="promise"><li>${ICON.check}テレビ・スマホ・ゲームはおしまい</li><li>${ICON.check}歯みがきをして、ねる準備をはじめる</li><li>${ICON.check}iPadとスマホは充電台へ</li></ul></div>`;
+  } else if (st === 'prep'){
+    const whoOpts = (cur, free) => free ? `<option value="all" selected>みんな</option>` : S.members.map(m => { const dm = d.members.find(x => x.id === m.id); return `<option value="${m.id}" ${cur === m.id ? 'selected' : ''}>${esc(dm ? dm.name : m.name)}</option>`; }).join('') + `<option value="adults" ${cur === 'adults' ? 'selected' : ''}>おとな</option>`;
+    const durOpts = cur => { let o = ''; for (let mm = 0; mm <= 120; mm += 5) o += `<option value="${mm}" ${mm === cur ? 'selected' : ''}>${mm}分</option>`; return o; };
+    const chain = prepChain(d.prep, d.declareTime), at = id => chain.find(x => x.id === id);
+    const up = `<svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const dn = `<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    body = head('夜のじゅんび', `上から順番にやります。いちばん下が、おやすみタイム（${d.declareTime}）におわるように、かかる時間から逆算して締め切りが決まります。`, 'allcheck') +
+      `<div class="tut-card"><div class="prep-edit">${d.prep.map((t,i) => { const c = at(t.id), free = t.kind === 'free'; return `<div class="pe ${t.on ? '' : 'off'}">
+          <div class="m"><button data-act="tut-prep-move" data-idx="${i}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="${esc(t.name)}を上へ" type="button">${up}</button><button data-act="tut-prep-move" data-idx="${i}" data-d="1" ${i === d.prep.length - 1 ? 'disabled' : ''} aria-label="${esc(t.name)}を下へ" type="button">${dn}</button></div>
+          <button class="ib" data-act="tut-prep-icon" data-idx="${i}" aria-label="アイコンを変える" type="button">${tile(t.icon, 44)}</button>
+          <input class="n" data-tf="p-name" data-pi="${i}" maxlength="16" value="${esc(t.name)}" aria-label="じゅんびの名前">
+          <select class="d" data-tf="p-dur" data-pi="${i}" aria-label="${free ? '長さ' : 'かかる時間'}">${durOpts(t.dur)}</select>
+          <select class="w" data-tf="p-who" data-pi="${i}" aria-label="担当" ${free ? 'disabled' : ''}>${whoOpts(t.who, free)}</select>
+          <span class="t">${c ? (free ? `${c.from}〜${c.dl}` : `${c.dl}まで`) : '使わない'}<small>${free ? '自由時間' : 'かかる時間 ' + t.dur + '分'}</small></span>
+          <input class="o" type="checkbox" data-tf="p-on" data-pi="${i}" ${t.on ? 'checked' : ''} aria-label="${esc(t.name)}を使う">
+          <button class="x" data-act="tut-prep-del" data-idx="${i}" aria-label="${esc(t.name)}を消す" type="button">×</button></div>`; }).join('')}</div>
+        <div class="row"><input id="tut-prep-new" maxlength="16" placeholder="じゅんびを追加する（例：明日の用意）" style="flex:1;min-width:180px"><button class="btn small" data-act="tut-prep-add" type="button">追加</button></div>
+        <div class="row"><button class="btn small ghost" data-act="tut-prep-reset" type="button">おすすめの順番にもどす</button></div>
+        <p class="note" style="margin:0">▲▼で順番を変えられます。アイコンを押すと絵が変わります。チェックを外したじゅんびは使いません。</p></div>
+      <div class="tut-card"><ul class="promise">
+        <li>${ICON.check}宿題は、夕ごはんの前がおすすめ</li>
+        <li>${ICON.check}お風呂は、ねる1.5〜2時間前に出ると寝つきやすい</li>
+        <li>${ICON.check}「ごはんスタート」はおとなの担当。ごはんは急がせず、始める時間を早める</li>
+        <li>${ICON.check}自由時間をはさんでおくと、少し遅れても間に合う</li></ul>
+        <p class="note" style="margin:0">夕方からホーム画面にリストが出ます。おわったら本人が押します。1週目は時間を記録するだけで、2週目から「予定どおり／何分おくれ」が出ます。</p></div>`;
+  } else if (st === 'reward'){
+    body = head('ごほうび', 'こどもが7日のうち4日スタンプをとると、週のごほうびを1つ選べます。', 'reward') +
+      `<div class="tut-card"><h3>週のごほうびの候補</h3>
+        <ul class="menu-edit">${d.menu.map((x,i) => `<li><span>${esc(x)}</span><button class="x" data-act="tut-menu-del" data-idx="${i}" aria-label="${esc(x)}を消す" type="button">×</button></li>`).join('')}</ul>
+        <div class="row"><input id="tut-menu-new" maxlength="30" placeholder="候補を追加する" style="flex:1;min-width:180px"><button class="btn small" data-act="tut-menu-add" type="button">追加</button></div>
+        <p class="note" style="margin:0">夜ふかしにつながるもの（夜のゲーム延長など）は入れないのがおすすめです。</p></div>
+      <div class="tut-card"><div class="field"><label for="tr-m">月のイベント（家族スタンプ10こで決定）</label><input id="tr-m" data-tf="monthly" maxlength="40" value="${esc(d.monthly)}"></div></div>`;
+  } else {
+    const rows = d.members.map((dm,i) => `<tr><td><span class="dot" style="--mc:var(--m${i});display:inline-block;margin-right:6px"></span>${esc(dm.name)}</td><td>${esc(dm.job === 'custom' ? (dm.jobName || '自分で決めた役') : JOBS[dm.job].name)}</td><td>${tutBed(dm)}</td><td>${dm.wake}</td></tr>`).join('');
+    body = head('家族のやくそく', 'さいごに、決めたことを確かめましょう。', 'stamp') +
+      `<div class="tut-card scroll-x"><table class="sumtbl"><thead><tr><th>名前</th><th>役</th><th>ねる</th><th>起きる</th></tr></thead><tbody>${rows}</tbody></table>
+        <p style="margin:0">おやすみタイム <b>${d.declareTime}</b>　キャラクター <b>${esc(d.pal)}</b></p>
+        <div class="row" style="gap:8px 14px">${prepChain(d.prep, d.declareTime).map(t => `<span class="row" style="gap:6px;font-size:14px">${tile(t.icon, 26)}${esc(t.name)} ${t.kind === 'free' ? t.from + '〜' : ''}${t.dl}</span>`).join('')}</div></div>
+      <div class="tut-card"><h3>やくそく</h3><ul class="promise">
+        <li>${ICON.check}点数やスタンプがないことでは、叱らない</li>
+        <li>${ICON.check}リーダーの「おやすみタイム」には、みんなすぐに応じる</li>
+        <li>${ICON.check}iPadとスマホは、寝室に持ちこまない</li></ul></div>
+      ${S.demo ? '<p class="note" style="margin:0">「この内容ではじめる」を押すと、デモデータが消えて、今日から1週目がはじまります。</p>' : ''}`;
+  }
+  const last = t.step === TUT_STEPS.length - 1;
+  const nav = t.only ? `<div class="tut-nav"><button class="btn" data-act="tut-close" type="button">やめる</button><button class="btn primary" data-act="tut-next" type="button">保存</button></div>`
+    : `<div class="tut-nav"><button class="btn" data-act="tut-back" type="button" ${t.step === 0 ? 'disabled' : ''}>もどる</button><button class="btn primary" data-act="tut-next" type="button">${t.step === 0 ? 'はじめる' : last ? (S.demo ? 'この内容ではじめる' : 'この内容で保存') : 'つぎへ'}</button></div>`;
+  const keep = UI.tut.lastStep === t.step ? $('#tut').scrollTop : 0;
+  $('#tut').innerHTML = `<div class="tut-inner">${top}${body}${nav}</div>`;
+  $('#tut').scrollTop = keep; UI.tut.lastStep = t.step;
+}
+
+/* ---------- バックアップ ---------- */
+async function backupFile(){
+  const name = `nemuri-note-${today()}.json`, text = JSON.stringify(S);
+  const done = () => { S.lastBackup = today(); save(); toast('保存しました'); render(); };
+  /* claude.ai の中で開いているときは、その保存機能を使う */
+  if (window.claude && window.claude.use){
+    let dl = null; try { dl = await window.claude.use('downloads'); } catch(e){}
+    if (dl){
+      try { await dl.save({filename:name, data:text}); done(); }
+      catch(e){ if (!e || e.code !== 'declined') toast('この画面ではファイルに保存できません。「テキストで書き出す」を使ってください'); }
+      return;
+    }
+  }
+  try {
+    const file = new File([text], name, {type:'application/json'});
+    if (navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:name}); done(); return; }
+  } catch(e){ if (e && e.name === 'AbortError') return; }
+  try {
+    const url = URL.createObjectURL(new Blob([text], {type:'application/json'}));
+    const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    done();
+  } catch(e){ toast('この画面ではファイルに保存できません。「テキストで書き出す」を使ってください'); }
+}
+
+/* ---------- デモデータ ---------- */
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function makeDemo(){
+  S = freshState(); S.demo = true;
+  S.start = addDays(today(), -18);
+  const rnd = mulberry32(20261117), r = (a,b) => a + Math.round(rnd()*(b-a));
+  const c2o = c => c >= 720 ? c - 720 : c + 720;
+  const mood = () => { const x = rnd(); return x < .55 ? 1 : x < .85 ? 2 : 3; };
+  const kidBase = [22*60+35, 22*60+12, 21*60+52];
+  const LAST = 17;
+  for (let i = 0; i <= LAST; i++){
+    const d = addDays(S.start, i), w = Math.floor(i/7), we = isWeekendNight(d);
+    if (i !== 12){
+      let lo = kidBase[w] + r(-10,10) + (we ? r(10,25) : 0);
+      if (i === 9) lo += r(30,40);
+      const wk = we ? 7*60 + r(5,30) : 6*60 + 30 + r(-6,4);
+      S.entries.m1[d] = i === LAST ? {lo: c2o(lo), src:'tap'} : {lo: c2o(lo), wk: c2o(wk), mood: mood(), src:'tap'};
+    }
+    const plo = 22*60+50 + r(-15,20) + (we ? r(10,30) : 0), pwk = we ? 7*60 + r(0,30) : 6*60 + 20 + r(-8,8);
+    S.entries.m2[d] = {lo: c2o(plo), wk: c2o(pwk), mood: mood(), src:'tap'};
+    const mlo = 22*60+35 + r(-15,15) + (we ? r(10,25) : 0), mwk = we ? 6*60+50 + r(0,25) : 6*60 + 10 + r(-6,6);
+    S.entries.m3[d] = {lo: c2o(mlo), wk: c2o(mwk), mood: mood(), src:'tap'};
+  }
+  for (let i = 7; i < LAST; i++){ if (i === 9 || i === 12) continue; S.declares[addDays(S.start, i)] = {mid:'m1', at: c2o(20*60 + 40 + r(0,15))}; }
+  for (let i = 0; i <= LAST; i++){
+    if (i === 12) continue;
+    const d = addDays(S.start, i), w = Math.floor(i/7), good = (i === 15 || i === 16);
+    const late = good ? 0 : [1, .75, .45][w];
+    const L = {};
+    prepTasks().forEach(t => {
+      const dl = clockToOff(t.dl);
+      const base = {hw:20, dinS:12, dinE:30, bath:38, pjs:36, futon:22, teeth:20}[t.id] || 10;
+      L[t.id] = good ? dl - r(2,12) : dl + Math.round(base * late) + r(-8,8);
+    });
+    S.prep.log[d] = L;
+  }
+  for (let i = 0; i <= LAST; i++){ const d = addDays(S.start, i); unlockBadges(analyze(d), addDays(d, 1)); }
+  const A = analyze();
+  const c = child();
+  if (weekStampCount(A, c.id, 0) >= 4) S.rewards.weekly[0] = {choice: S.menu[0], date: addDays(S.start, 7)};
+  if (weekStampCount(A, c.id, 1) >= 4) S.rewards.weekly[1] = {choice: S.menu[2], date: addDays(S.start, 14)};
+  save();
+}
+
+/* ---------- 操作 ---------- */
+function setView(v){
+  UI.view = v;
+  try { if (location.hash !== '#' + v) history.replaceState(null, '', '#' + v); } catch(e){}
+  render();
+  window.scrollTo(0, 0);
+}
+function readTime(id){ const v = $('#' + id).value; return v ? v : null; }
+
+document.addEventListener('click', ev => {
+  const ns = ev.target.closest('#nightsky');
+  if (ns){ ns.classList.remove('open'); return; }
+  if (ev.target.id === 'overlay'){ closeDialog(); return; }
+  const b = ev.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const act = b.dataset.act;
+  switch (act){
+    case 'nav': setView(b.dataset.view); break;
+    case 'theme': { const cur = UI.theme || autoTheme(); UI.theme = cur === 'night' ? 'day' : 'night'; render(); break; }
+    case 'sleep': doSleep(b.dataset.mid); break;
+    case 'wake': doWake(b.dataset.mid); break;
+    case 'mood': finishWake(Number(b.dataset.k)); break;
+    case 'rename': renameDialog(b.dataset.target); break;
+    case 'rename-save': renameSave(b.dataset.target); break;
+    case 'man-next': {
+      const lo = readTime('man-lo'), wk = readTime('man-wk'), err = $('#man-err');
+      if (!lo || !wk){ err.textContent = '2つとも時間を入れてね'; break; }
+      const loO = clockToOff(lo), wkO = clockToOff(wk);
+      if (wkO <= loO){ err.textContent = '起きた時間が、ねた時間より前になっています'; break; }
+      UI.flow.lo = loO; UI.flow.wk = wkO; moodDialog(); break;
+    }
+    case 'close': closeDialog(); UI.flow = null; break;
+    case 'confirm-ok': { const f = confirmFn; confirmFn = null; closeDialog(); if (f) f(); break; }
+    case 'pick-weekly': pickWeekly(Number(b.dataset.wi)); break;
+    case 'choose-weekly': { const wi = Number(b.dataset.wi), x = S.menu[Number(b.dataset.idx)]; S.rewards.weekly[wi] = {choice: x, date: today()}; save(); openDialog(`${pic('reward', 'scene', S.pal.name)}<h3 class="center">決まり</h3><div class="getbox">${pawOn(40)}<div><b>${esc(x)}</b><br>週末のお楽しみにしよう</div></div><button class="btn primary" data-act="close" type="button">閉じる</button>`); render(); break; }
+    case 'pick-monthly': pickMonthly(b.dataset.mk); break;
+    case 'choose-monthly': { const w = ($('#mon-where').value || '').trim(); if (!w){ $('#mon-where').focus(); break; } S.rewards.monthly[b.dataset.mk] = {choice: w, date: today()}; save(); render(); openDialog(`${pic('outing', 'scene', S.pal.name)}<h3 class="center">行き先が決まりました</h3><div class="getbox"><div><b>${esc(w)}</b><br>家族みんなでおでかけしよう</div></div><button class="btn primary" data-act="close" type="button">閉じる</button>`); break; }
+    case 'log-member': UI.logMember = b.dataset.mid; render(); break;
+    case 'log-period': UI.logPeriod = b.dataset.p; render(); break;
+    case 'log-nav': { const dd = Number(b.dataset.d), P = UI.logPeriod || 'week';
+      if (P === 'week') UI.logWeek = (UI.logWeek || 0) + dd;
+      else if (P === 'month') UI.logMonth = mkAdd(UI.logMonth || tonight().slice(0,7), dd);
+      else UI.logYearEnd = mkAdd(UI.logYearEnd || tonight().slice(0,7), dd * 12);
+      render(); break; }
+    case 'badge-member': UI.badgeMember = b.dataset.mid; render(); break;
+    case 'pin': {
+      const k = b.dataset.k;
+      if (k === '消す') UI.pin = UI.pin.slice(0, -1);
+      else if (k === 'OK'){ if (UI.pin === S.pin){ UI.otonaOpen = true; UI.pin = ''; } else { UI.pin = ''; toast('番号がちがいます'); } }
+      else if (UI.pin.length < 4) UI.pin += k;
+      render(); break;
+    }
+    case 'otona-lock': UI.otonaOpen = false; UI.exportText = ''; render(); break;
+    case 'save-members': {
+      let ok = true;
+      S.members.forEach((m,i) => {
+        const nm = ($('#f-name-' + i).value || '').trim(), lo = readTime('f-lo-' + i), wk = readTime('f-wk-' + i);
+        if (!nm || !lo || !wk){ ok = false; return; }
+        m.name = nm; m.lo = lo; m.wake = wk; m.sleep = Number($('#f-sl-' + i).value);
+        m.job = $('#f-job-' + i).value;
+        if (m.job === 'custom'){ m.jobName = ($('#f-jobname-' + i).value || '').trim(); m.jobTask = ($('#f-jobtask-' + i).value || '').trim(); }
+      });
+      { const dt = readTime('f-decl'); if (dt) S.declareTime = dt; }
+      save(); toast(ok ? '保存しました' : '空欄のある人は保存していません'); render(); break;
+    }
+    case 'edit-pick': UI.editPick = {mid: b.dataset.mid, d: b.dataset.d}; render(); { const f = $('#f-e-lo'); if (f) f.scrollIntoView({block:'center'}); } break;
+    case 'save-entry': {
+      const mid = $('#f-e-mid').value, d = $('#f-e-d').value, lo = readTime('f-e-lo'), wk = readTime('f-e-wk'), md = $('#f-e-mood').value;
+      if (!d){ toast('日付を入れてください'); break; }
+      if (!lo && !wk){ toast('消灯か起床を入れてください'); break; }
+      const e = {src:'hand'};
+      if (lo) e.lo = clockToOff(lo);
+      if (wk) e.wk = clockToOff(wk);
+      if (e.lo != null && e.wk != null && e.wk <= e.lo){ toast('起床が消灯より前になっています'); break; }
+      if (md) e.mood = Number(md);
+      S.entries[mid][d] = e; UI.editPick = {mid, d};
+      unlockBadges(analyze(), today()); save(); toast('保存しました'); render(); break;
+    }
+    case 'delete-entry': {
+      const mid = $('#f-e-mid').value, d = $('#f-e-d').value;
+      if (!S.entries[mid][d]){ toast('この夜の記録はありません'); break; }
+      confirmBox(`${esc(member(mid).name)}の${mdwText(d)}の夜の記録を削除しますか？`, '削除する', () => { delete S.entries[mid][d]; save(); toast('削除しました'); render(); }, true);
+      break;
+    }
+    case 'save-menu': {
+      const list = $('#f-menu').value.split('\n').map(s => s.trim()).filter(Boolean);
+      if (list.length) S.menu = list;
+      const mr = ($('#f-monthly').value || '').trim(); if (mr) S.monthlyReward = mr;
+      save(); toast('保存しました'); render(); break;
+    }
+    case 'save-start': {
+      const st = $('#f-start').value, pin = ($('#f-pin').value || '').trim();
+      if (st && st <= today()) S.start = st;
+      if (/^\d{4}$/.test(pin)) S.pin = pin;
+      save(); toast('保存しました'); render(); break;
+    }
+    case 'export': UI.exportText = JSON.stringify(S); S.lastBackup = today(); save(); render(); break;
+    case 'backup-file': backupFile(); break;
+    case 'copy-export': {
+      const t = UI.exportText;
+      if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(() => toast('コピーしました'), () => toast('コピーできませんでした。テキストを選んでコピーしてください')); }
+      else toast('テキストを選んでコピーしてください');
+      break;
+    }
+    case 'import': {
+      try {
+        const o = JSON.parse($('#f-import').value);
+        if (!o || !Array.isArray(o.members) || !o.entries) throw new Error('bad');
+        S = migrate(o); save(); UI.exportText = ''; toast('読み込みました'); render();
+      } catch(e){ toast('読み込めませんでした。書き出したテキストか確認してください'); }
+      break;
+    }
+    case 'demo': confirmBox('いまのデータを消して、デモデータを入れなおしますか？', '入れなおす', () => { makeDemo(); toast('デモデータを入れました'); render(); }, true); break;
+    case 'reset': confirmBox('記録・スタンプ・バッジをすべて消して、今日から1週目をはじめますか？ 名前・目標・役・ごほうびの設定は残ります。', '消してはじめる', () => { clearRecords(); save(); toast('今日が1週目の初日です'); setView('home'); }, true); break;
+    case 'tut-start': openTut(); break;
+    case 'tut-demo': closeTut(); makeDemo(); UI.view = 'home'; render(); toast('デモデータを入れました'); break;
+    case 'tut-close': closeTut(); break;
+    case 'tut-next': tutNext(); break;
+    case 'tut-back': UI.tut.step = Math.max(0, UI.tut.step - 1); renderTut(); break;
+    case 'tut-rec-decl': { UI.tut.d.declTouched = true;  const c = UI.tut.d.members.find(x => x.role === 'child') || UI.tut.d.members[0]; UI.tut.d.declareTime = minusClock(minusClock(c.wake, c.sleep), 30); renderTut(); break; }
+    case 'tut-menu-del': UI.tut.d.menu.splice(Number(b.dataset.idx), 1); renderTut(); break;
+    case 'tut-prep-edit': openTut('prep'); break;
+    case 'tut-prep-reset': UI.tut.d.prep = defaultPrep().map(t => Object.assign(t, {who: t.who === 'm1' ? tutKid() : t.who})); renderTut(); break;
+    case 'tut-prep-del': UI.tut.d.prep.splice(Number(b.dataset.idx), 1); renderTut(); break;
+    case 'tut-prep-move': { const P2 = UI.tut.d.prep, i = Number(b.dataset.idx), j = i + Number(b.dataset.d); if (j < 0 || j >= P2.length) break; [P2[i], P2[j]] = [P2[j], P2[i]]; renderTut(); const btn = document.querySelector(`[data-act="tut-prep-move"][data-idx="${j}"][data-d="${b.dataset.d}"]`) || document.querySelector(`[data-act="tut-prep-move"][data-idx="${j}"]`); if (btn && !btn.disabled) btn.focus(); break; }
+    case 'tut-prep-icon': { const t2 = UI.tut.d.prep[Number(b.dataset.idx)]; const k = ICON_CYCLE.indexOf(t2.icon); t2.icon = ICON_CYCLE[(k + 1) % ICON_CYCLE.length]; renderTut(); const nb2 = document.querySelector(`[data-act="tut-prep-icon"][data-idx="${b.dataset.idx}"]`); if (nb2) nb2.focus(); break; }
+    case 'tut-prep-add': { const v = ($('#tut-prep-new').value || '').trim(); if (v){ const P2 = UI.tut.d.prep; P2.splice(Math.max(0, P2.length - 1), 0, {id:'c' + Date.now(), name:v, dur:10, who:tutKid(), icon:'paw', on:true}); renderTut(); } break; }
+    case 'prep': {
+      const n = tonight(), L = S.prep.log[n] || (S.prep.log[n] = {}), id = b.dataset.tid, wasOK = prepOK(n);
+      if (L[id] != null){ delete L[id]; toast('取り消しました'); }
+      else L[id] = offAt(n, new Date());
+      const fresh = unlockBadges(analyze(), today());
+      save(); render();
+      if (!wasOK && prepOK(n)){
+        const nb = fresh[child().id] || [];
+        openDialog(`${pic('allcheck', 'scene', S.pal.name)}<h3 class="center">準備バッチリ</h3><p class="center" style="margin:0">ねる前のじゅんびが、全部おわりました。</p>${nb.length ? `<div class="getbox">${pic('badge')}<div style="flex:1"><b>新しいバッジ</b><div class="badgelist">${nb.map(x => `<div>${medal(x, true, 34)}<span><b>${x.name}</b>　${x.desc}</span></div>`).join('')}</div></div></div>` : ''}<button class="btn primary" data-act="close" type="button">閉じる</button>`);
+      }
+      break;
+    }
+    case 'tut-avatar': { const dm = UI.tut.d.members[Number(b.dataset.i)]; dm.avatar = AVATARS[(AVATARS.indexOf(dm.avatar) + 1) % AVATARS.length]; renderTut(); break; }
+    case 'ticket-info': { const A2 = analyze(), m = member(b.dataset.mid), a2 = A2.members[m.id], wi2 = Math.max(0, weekIndex(tonight())), used = a2.ticketUsed[wi2];
+      openDialog(`${pic('ticket', 'scene', S.pal.name)}<h3 class="center">おやすみチケット</h3><p style="margin:0;text-align:center">1週間に1枚。スタンプがとれなかった日があっても、チケットで連続記録がつづきます。</p><div class="getbox plain"><div>${esc(m.name)}の今週のチケット：<b>${used ? `${mdwText(used)}の夜に使いました` : 'まだ使っていません'}</b></div></div><button class="btn" data-act="close" type="button">閉じる</button>`); break; }
+    case 'tut-menu-add': { const v = ($('#tut-menu-new').value || '').trim(); if (v){ UI.tut.d.menu.push(v); renderTut(); const i = $('#tut-menu-new'); if (i) i.focus(); } break; }
+    case 'declare': doDeclare(b.dataset.mid); break;
+    case 'job-info': { const m = member(b.dataset.mid); openDialog(`${pic(JOB_IMG[m.job] || 'stand', 'scene', jobName(m))}<h3 class="center">${esc(m.name)}の役：${esc(jobName(m))}</h3><p style="margin:0;text-align:center">${esc(jobTask(m))}</p><button class="btn" data-act="close" type="button">閉じる</button>`); break; }
+  }
+});
+document.addEventListener('input', ev => tutInput(ev.target));
+document.addEventListener('change', ev => {
+  tutInput(ev.target);
+  if (ev.target.dataset && ev.target.dataset.jobsel != null){ const c = $('#f-custom-' + ev.target.dataset.jobsel); if (c) c.hidden = ev.target.value !== 'custom'; }
+  if (ev.target.id === 'f-file' && ev.target.files && ev.target.files[0]){
+    const fr = new FileReader();
+    fr.onload = () => { $('#f-import').value = String(fr.result || ''); };
+    fr.readAsText(ev.target.files[0]);
+  }
+  if (ev.target.id === 'f-e-mid' || ev.target.id === 'f-e-d'){
+    UI.editPick = {mid: $('#f-e-mid').value, d: $('#f-e-d').value || lastNight()}; render();
+  }
+});
+document.addEventListener('keydown', ev => {
+  if (ev.key === 'Enter' && ev.target.id === 'tut-prep-new'){ ev.preventDefault(); const b = document.querySelector('[data-act="tut-prep-add"]'); if (b) b.click(); return; }
+  if (ev.key === 'Enter' && ev.target.id === 'tut-menu-new'){ ev.preventDefault(); const b = document.querySelector('[data-act="tut-menu-add"]'); if (b) b.click(); return; }
+  if (ev.key === 'Enter' && ev.target.id === 'rename-input'){ ev.preventDefault(); const b = $('[data-act="rename-save"]'); if (b) renameSave(b.dataset.target); return; }
+  if (ev.key === 'Escape'){ closeDialog(); UI.flow = null; $('#nightsky').classList.remove('open'); }
+});
+let rt;
+window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (UI.view === 'kiroku') drawCharts(analyze()); }, 150); });
+window.addEventListener('hashchange', () => { const v = location.hash.slice(1); if (VIEWS.some(x => x.id === v) && v !== UI.view){ UI.view = v; render(); } });
+
+/* ---------- 起動 ---------- */
+const loaded = loadState();
+if (loaded && loaded.demo && !(loaded.prep && loaded.prep.v === 3)) makeDemo();
+else if (loaded){ S = migrate(loaded); save(); } else { S = freshState(); save(); }
+const hv = location.hash.slice(1);
+if (VIEWS.some(x => x.id === hv)) UI.view = hv;
+render();
+if (!S.demo && !S.onboarded && !hasRecords()) openTut();
+setInterval(() => { if (!$('#overlay').classList.contains('open') && UI.view === 'home') render(); }, 5*60*1000);
+})();
+</script>
+</body>
+</html>
